@@ -6,6 +6,7 @@ Aclaraciones:
 - *Todos* los metodos deben estar testeados con un test unitario, aunque no se aclare explicitamente en el enunciado.
 - Dentro de las posibilidades utilizar NUnit como framework de testing
 - Para la nota final se tomara en cuenta no solo el codigo fuente de la implementacion, sino tambien el uso uso de Git y las herramientas que este provee como commits, ramas y tags.
+- Cada clase de la implementacion y de testing debe estar en un archivo aparte.
 
 ## Iteración 1.
 Escribir un programa con programación orientada a objetos que permita ilustrar el funcionamiento del transporte urbano de pasajeros de la ciudad de Rosario.
