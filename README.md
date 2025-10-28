@@ -1,4 +1,7 @@
-[![codecov](https://codecov.io/gh/mgonzalesips/TrabajoTarjeta2025/graph/badge.svg?token=XI7V37W69W)](https://codecov.io/gh/mgonzalesips/TrabajoTarjeta2025)
+[![.NET](https://github.com/yucovsky/TrabajoTarjeta2025/actions/workflows/dotnet-codecov.yml/badge.svg)](https://github.com/yucovsky/TrabajoTarjeta2025/actions/workflows/dotnet-codecov.yml)
+[![codecov](https://codecov.io/gh/yucovsky/TrabajoTarjeta2025/branch/main/graph/badge.svg)](https://codecov.io/gh/yucovsky/TrabajoTarjeta2025)
+
+
 
 # Trabajo Tarjeta 2025
 
