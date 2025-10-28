@@ -3,7 +3,7 @@
 
 
 
-# Trabajo Tarjeta 2025
+# Trabajo Tarjeta 2025 
 
 El siguiente trabajo es un enunciado iterativo. Regularmente se ampliará y/o modificará el enunciado.
 
