@@ -1,4 +1,3 @@
-[![.NET](https://github.com/yucovsky/TrabajoTarjeta2025/actions/workflows/dotnet-codecov.yml/badge.svg)](https://github.com/yucovsky/TrabajoTarjeta2025/actions/workflows/dotnet-codecov.yml)
 [![codecov](https://codecov.io/gh/yucovsky/TrabajoTarjeta2025/branch/main/graph/badge.svg)](https://codecov.io/gh/yucovsky/TrabajoTarjeta2025)
 
 
