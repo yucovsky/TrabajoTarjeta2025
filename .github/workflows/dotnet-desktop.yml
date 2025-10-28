@@ -9,32 +9,31 @@ on:
       - '**'
 
 jobs:
-
   build-and-test:
-
     runs-on: windows-latest
-
+    
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
-   
     - name: Setup .NET 5.0
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '5.0.x'
-
+    
     - name: Restore dependencies
       run: dotnet restore
-
+    
     - name: Build
       run: dotnet build --no-restore
-
+    
     - name: Run tests with coverage
-      run: dotnet test --no-build --collect:"XPlat Code Coverage"
-
+      run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" --results-directory ./TestResults
+    
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v5
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        files: ./**/coverage.cobertura.xml
+        directory: ./TestResults
+        fail_ci_if_error: false
+        verbose: true
