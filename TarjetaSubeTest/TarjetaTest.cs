@@ -64,9 +64,9 @@ namespace TarjetaSubeTest
         [Test]
         public void Pagar_SaldoInsuficiente_LanzaExcepcion()
         {
-            tarjeta.Cargar(1500);
-            
-            Assert.Throws<InvalidOperationException>(() => tarjeta.Pagar(1580));
+            Tarjeta tarjetaConSaldoBajo = new Tarjeta(1000);
+
+            Assert.Throws<InvalidOperationException>(() => tarjetaConSaldoBajo.Pagar(1580));
         }
 
         [Test]
