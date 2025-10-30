@@ -34,5 +34,16 @@ namespace TarjetaSube
             tarjeta.Pagar(TARIFA_BASICA);
             return new Boleto(linea, interno, TARIFA_BASICA, DateTime.Now);
         }
+
+        public bool PagarConBoolean(Tarjeta tarjeta)
+        {
+            if (tarjeta.Saldo < TARIFA_BASICA)
+            {
+                return false;
+            }
+
+            tarjeta.Pagar(TARIFA_BASICA);
+            return true;
+        }
     }
 }
