@@ -59,11 +59,11 @@ namespace TarjetaSubeTest
 
             bool primerViaje = colectivo.PagarConBoolean(tarjeta);
             Assert.IsTrue(primerViaje);
-            Assert.AreEqual(-TARIFA, tarjeta.Saldo);
+            Assert.AreEqual(-1580, tarjeta.Saldo);
 
             bool segundoViaje = colectivo.PagarConBoolean(tarjeta);
             Assert.IsFalse(segundoViaje);
-            Assert.AreEqual(-TARIFA, tarjeta.Saldo);
+            Assert.AreEqual(-1580, tarjeta.Saldo);
         }
 
         [Test]

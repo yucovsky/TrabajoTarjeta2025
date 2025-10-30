@@ -33,7 +33,11 @@ namespace TarjetaSube
                 throw new InvalidOperationException("No se puede realizar el viaje. Saldo insuficiente.");
             }
 
-            tarjeta.Pagar(montoAPagar);
+            if (!tarjeta.EsFranquiciaGratuita())
+            {
+                tarjeta.Pagar(montoAPagar);
+            }
+            
             return new Boleto(linea, interno, montoAPagar, DateTime.Now);
         }
 
@@ -46,7 +50,12 @@ namespace TarjetaSube
                 return false;
             }
 
-            return tarjeta.IntentarPagar(montoAPagar);
+            if (!tarjeta.EsFranquiciaGratuita())
+            {
+                return tarjeta.IntentarPagar(montoAPagar);
+            }
+            
+            return true;
         }
     }
 }

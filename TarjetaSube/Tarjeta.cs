@@ -1,4 +1,6 @@
-﻿namespace TarjetaSube
+﻿using System;
+
+namespace TarjetaSube
 {
     public class Tarjeta
     {
@@ -10,7 +12,7 @@
         public Tarjeta(int saldo = 0)
         {
             if (saldo < SALDO_NEGATIVO_MAXIMO)
-                throw new System.ArgumentException($"El saldo inicial no puede ser menor a ${SALDO_NEGATIVO_MAXIMO}");
+                throw new ArgumentException($"El saldo inicial no puede ser menor a ${SALDO_NEGATIVO_MAXIMO}");
             
             this.saldo = saldo;
         }
@@ -23,10 +25,10 @@
         public void Cargar(int importe)
         {
             if (!EsCargaValida(importe))
-                throw new System.ArgumentException($"La carga de ${importe} no está permitida. Cargas permitidas: {string.Join(", ", CARGAS_PERMITIDAS)}");
+                throw new ArgumentException($"La carga de ${importe} no está permitida. Cargas permitidas: {string.Join(", ", CARGAS_PERMITIDAS)}");
             
             if (saldo + importe > SALDO_MAXIMO)
-                throw new System.InvalidOperationException($"No se puede superar el saldo máximo de ${SALDO_MAXIMO}");
+                throw new InvalidOperationException($"No se puede superar el saldo máximo de ${SALDO_MAXIMO}");
             
             saldo += importe;
         }
@@ -34,10 +36,10 @@
         public void Pagar(int monto)
         {
             if (monto <= 0)
-                throw new System.ArgumentException("El monto a pagar debe ser positivo");
+                throw new ArgumentException("El monto a pagar debe ser positivo");
             
-            if (saldo - monto < SALDO_NEGATIVO_MAXIMO)
-                throw new System.InvalidOperationException($"No se puede tener un saldo menor a ${SALDO_NEGATIVO_MAXIMO}");
+            if (!PuedePagar(monto))
+                throw new InvalidOperationException($"No se puede tener un saldo menor a ${SALDO_NEGATIVO_MAXIMO}");
             
             saldo -= monto;
         }
@@ -47,7 +49,7 @@
             if (monto <= 0)
                 return false;
             
-            if (saldo - monto < SALDO_NEGATIVO_MAXIMO)
+            if (!PuedePagar(monto))
                 return false;
             
             saldo -= monto;
@@ -62,6 +64,11 @@
         public virtual int CalcularMontoPasaje(int tarifaBase)
         {
             return tarifaBase;
+        }
+
+        public virtual bool EsFranquiciaGratuita()
+        {
+            return false;
         }
 
         private bool EsCargaValida(int importe)
