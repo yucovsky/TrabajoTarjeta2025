@@ -1,9 +1,8 @@
 <p align="center">
   <a href="https://codecov.io/gh/yucovsky/TrabajoTarjeta2025">
-    <img src="https://img.shields.io/badge/-92%25%20Passing-brightgreen?style=for-the-badge" alt="Coverage" />
+    <img src="https://codecov.io/gh/yucovsky/TrabajoTarjeta2025/branch/main/graph/badge.svg" alt="Codecov coverage" width="200"/>
   </a>
 </p>
-
 
 
 
