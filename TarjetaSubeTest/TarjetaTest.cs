@@ -74,5 +74,23 @@ namespace TarjetaSubeTest
         {
             Assert.Throws<ArgumentException>(() => new Tarjeta(-100));
         }
+
+        [Test]
+        public void Pagar_SuperaLimiteNegativo_LanzaExcepcion()
+        {
+            Tarjeta tarjeta = new Tarjeta(-1100);
+
+            Assert.Throws<InvalidOperationException>(() => tarjeta.Pagar(200));
+            Assert.AreEqual(-1100, tarjeta.Saldo);
+        }
+
+        [Test]
+        public void PuedePagar_VerificaLimiteNegativo()
+        {
+            Tarjeta tarjeta = new Tarjeta(-1100);
+
+            Assert.IsTrue(tarjeta.PuedePagar(100)); 
+            Assert.IsFalse(tarjeta.PuedePagar(101)); 
+        }
     }
 }

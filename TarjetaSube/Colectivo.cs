@@ -26,9 +26,9 @@ namespace TarjetaSube
 
         public Boleto PagarCon(Tarjeta tarjeta)
         {
-            if (tarjeta.Saldo < TARIFA_BASICA)
+            if (!tarjeta.PuedePagar(TARIFA_BASICA))
             {
-                throw new InvalidOperationException("Saldo insuficiente para realizar el viaje");
+                throw new InvalidOperationException("No se puede realizar el viaje. Saldo insuficiente incluso con saldo negativo permitido.");
             }
 
             tarjeta.Pagar(TARIFA_BASICA);
@@ -37,13 +37,12 @@ namespace TarjetaSube
 
         public bool PagarConBoolean(Tarjeta tarjeta)
         {
-            if (tarjeta.Saldo < TARIFA_BASICA)
+            if (!tarjeta.PuedePagar(TARIFA_BASICA))
             {
                 return false;
             }
 
-            tarjeta.Pagar(TARIFA_BASICA);
-            return true;
+            return tarjeta.IntentarPagar(TARIFA_BASICA);
         }
     }
 }

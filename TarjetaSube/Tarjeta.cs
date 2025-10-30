@@ -6,12 +6,13 @@ namespace TarjetaSube
     {
         private int saldo;
         private const int SALDO_MAXIMO = 40000;
+        private const int SALDO_NEGATIVO_MAXIMO = -1200;
         private static readonly int[] CARGAS_PERMITIDAS = { 2000, 3000, 4000, 5000, 8000, 10000, 15000, 20000, 25000, 30000 };
 
         public Tarjeta(int saldo = 0)
         {
-            if (saldo < 0)
-                throw new ArgumentException("El saldo inicial no puede ser negativo");
+            if (saldo < SALDO_NEGATIVO_MAXIMO)
+                throw new ArgumentException($"El saldo inicial no puede ser menor a ${SALDO_NEGATIVO_MAXIMO}");
             
             this.saldo = saldo;
         }
@@ -37,8 +38,8 @@ namespace TarjetaSube
             if (monto <= 0)
                 throw new ArgumentException("El monto a pagar debe ser positivo");
             
-            if (saldo < monto)
-                throw new InvalidOperationException("Saldo insuficiente para realizar el pago");
+            if (saldo - monto < SALDO_NEGATIVO_MAXIMO)
+                throw new InvalidOperationException($"No se puede tener un saldo menor a ${SALDO_NEGATIVO_MAXIMO}");
             
             saldo -= monto;
         }
@@ -48,7 +49,7 @@ namespace TarjetaSube
             if (monto <= 0)
                 return false;
             
-            if (saldo < monto)
+            if (saldo - monto < SALDO_NEGATIVO_MAXIMO)
                 return false;
             
             saldo -= monto;
@@ -63,6 +64,11 @@ namespace TarjetaSube
                     return true;
             }
             return false;
+        }
+
+        public bool PuedePagar(int monto)
+        {
+            return saldo - monto >= SALDO_NEGATIVO_MAXIMO;
         }
     }
 }
