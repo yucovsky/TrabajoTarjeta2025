@@ -18,7 +18,6 @@ namespace TarjetaSubeTest
         public void PagarCon_SaldoSuficiente_GeneraBoleto()
         {
             Tarjeta tarjeta = new Tarjeta(2000);
-
             Boleto boleto = colectivo.PagarCon(tarjeta);
 
             Assert.IsNotNull(boleto);
@@ -32,7 +31,6 @@ namespace TarjetaSubeTest
         public void PagarCon_SaldoInsuficiente_LanzaExcepcion()
         {
             Tarjeta tarjeta = new Tarjeta(1000);
-
             Assert.Throws<InvalidOperationException>(() => colectivo.PagarCon(tarjeta));
         }
     }

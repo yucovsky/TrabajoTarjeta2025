@@ -46,7 +46,6 @@ namespace TarjetaSubeTest
         public void Tarjeta_IntentarPagar_SaldoSuficiente_DevuelveTrueYDescuenta()
         {
             Tarjeta tarjeta = new Tarjeta(3000);
-
             bool resultado = tarjeta.IntentarPagar(1580);
 
             Assert.IsTrue(resultado);
@@ -57,7 +56,6 @@ namespace TarjetaSubeTest
         public void Tarjeta_IntentarPagar_SaldoInsuficiente_DevuelveFalseYNoDescuenta()
         {
             Tarjeta tarjeta = new Tarjeta(1000);
-
             bool resultado = tarjeta.IntentarPagar(1580);
 
             Assert.IsFalse(resultado);
@@ -68,7 +66,6 @@ namespace TarjetaSubeTest
         public void Tarjeta_IntentarPagar_MontoCero_DevuelveFalse()
         {
             Tarjeta tarjeta = new Tarjeta(2000);
-
             bool resultado = tarjeta.IntentarPagar(0);
 
             Assert.IsFalse(resultado);
@@ -79,7 +76,6 @@ namespace TarjetaSubeTest
         public void Tarjeta_IntentarPagar_MontoNegativo_DevuelveFalse()
         {
             Tarjeta tarjeta = new Tarjeta(2000);
-
             bool resultado = tarjeta.IntentarPagar(-100);
 
             Assert.IsFalse(resultado);
@@ -93,22 +89,18 @@ namespace TarjetaSubeTest
             Tarjeta tarjeta = new Tarjeta(5000);
 
             bool primerViaje = colectivo.PagarConBoolean(tarjeta);
-            
             Assert.IsTrue(primerViaje);
             Assert.AreEqual(3420, tarjeta.Saldo);
 
             bool segundoViaje = colectivo.PagarConBoolean(tarjeta);
-            
             Assert.IsTrue(segundoViaje);
             Assert.AreEqual(1840, tarjeta.Saldo);
 
             bool tercerViaje = colectivo.PagarConBoolean(tarjeta);
-            
             Assert.IsTrue(tercerViaje);
-            Assert.AreEqual(260, tarjeta.Saldo); 
+            Assert.AreEqual(260, tarjeta.Saldo);
 
             bool cuartoViaje = colectivo.PagarConBoolean(tarjeta);
-            
             Assert.IsFalse(cuartoViaje);
             Assert.AreEqual(260, tarjeta.Saldo);
         }

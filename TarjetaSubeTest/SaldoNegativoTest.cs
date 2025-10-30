@@ -15,14 +15,12 @@ namespace TarjetaSubeTest
             Tarjeta tarjeta = new Tarjeta(500);
 
             bool primerViaje = tarjeta.IntentarPagar(TARIFA);
-            
             Assert.IsTrue(primerViaje);
             Assert.AreEqual(500 - TARIFA, tarjeta.Saldo);
 
             bool segundoViaje = tarjeta.IntentarPagar(TARIFA);
-            
             Assert.IsFalse(segundoViaje);
-            Assert.AreEqual(500 - TARIFA, tarjeta.Saldo); 
+            Assert.AreEqual(500 - TARIFA, tarjeta.Saldo);
         }
 
         [Test]
@@ -30,10 +28,10 @@ namespace TarjetaSubeTest
         {
             Tarjeta tarjeta = new Tarjeta(0);
 
-            Assert.IsFalse(tarjeta.IntentarPagar(1300)); 
-            Assert.AreEqual(0, tarjeta.Saldo); 
+            Assert.IsFalse(tarjeta.IntentarPagar(1300));
+            Assert.AreEqual(0, tarjeta.Saldo);
 
-            Assert.IsTrue(tarjeta.IntentarPagar(1200)); 
+            Assert.IsTrue(tarjeta.IntentarPagar(1200));
             Assert.AreEqual(-1200, tarjeta.Saldo);
         }
 
@@ -41,20 +39,16 @@ namespace TarjetaSubeTest
         public void Tarjeta_CargaConSaldoNegativo_DescuentaDeuda()
         {
             Tarjeta tarjeta = new Tarjeta(-800);
-
             tarjeta.Cargar(2000);
-
-            Assert.AreEqual(1200, tarjeta.Saldo); 
+            Assert.AreEqual(1200, tarjeta.Saldo);
         }
 
         [Test]
         public void Tarjeta_CargaPagaDeudaCompleta()
         {
             Tarjeta tarjeta = new Tarjeta(-1200);
-
-            tarjeta.Cargar(1200);
-
-            Assert.AreEqual(0, tarjeta.Saldo);
+            tarjeta.Cargar(2000);
+            Assert.AreEqual(800, tarjeta.Saldo);
         }
 
         [Test]
@@ -84,7 +78,6 @@ namespace TarjetaSubeTest
         [Test]
         public void Colectivo_PagarCon_SaldoNegativoPermitido_GeneraBoleto()
         {
-            // Arrange
             Colectivo colectivo = new Colectivo("132", 1234);
             Tarjeta tarjeta = new Tarjeta(500);
 
@@ -98,7 +91,7 @@ namespace TarjetaSubeTest
         public void Colectivo_PagarCon_SaldoInsuficienteInclusoConNegativo_LanzaExcepcion()
         {
             Colectivo colectivo = new Colectivo("132", 1234);
-            Tarjeta tarjeta = new Tarjeta(-1100); 
+            Tarjeta tarjeta = new Tarjeta(-1100);
 
             Assert.Throws<InvalidOperationException>(() => colectivo.PagarCon(tarjeta));
             Assert.AreEqual(-1100, tarjeta.Saldo);
@@ -111,11 +104,9 @@ namespace TarjetaSubeTest
             Colectivo colectivo = new Colectivo("132", 1234);
 
             tarjeta.Cargar(3000);
-
-            Assert.AreEqual(2000, tarjeta.Saldo); 
+            Assert.AreEqual(2000, tarjeta.Saldo);
 
             bool viaje = colectivo.PagarConBoolean(tarjeta);
-
             Assert.IsTrue(viaje);
             Assert.AreEqual(2000 - TARIFA, tarjeta.Saldo);
         }

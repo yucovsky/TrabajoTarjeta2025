@@ -26,23 +26,27 @@ namespace TarjetaSube
 
         public Boleto PagarCon(Tarjeta tarjeta)
         {
-            if (!tarjeta.PuedePagar(TARIFA_BASICA))
+            int montoAPagar = tarjeta.CalcularMontoPasaje(TARIFA_BASICA);
+            
+            if (!tarjeta.PuedePagar(montoAPagar))
             {
-                throw new InvalidOperationException("No se puede realizar el viaje. Saldo insuficiente incluso con saldo negativo permitido.");
+                throw new InvalidOperationException("No se puede realizar el viaje. Saldo insuficiente.");
             }
 
-            tarjeta.Pagar(TARIFA_BASICA);
-            return new Boleto(linea, interno, TARIFA_BASICA, DateTime.Now);
+            tarjeta.Pagar(montoAPagar);
+            return new Boleto(linea, interno, montoAPagar, DateTime.Now);
         }
 
         public bool PagarConBoolean(Tarjeta tarjeta)
         {
-            if (!tarjeta.PuedePagar(TARIFA_BASICA))
+            int montoAPagar = tarjeta.CalcularMontoPasaje(TARIFA_BASICA);
+            
+            if (!tarjeta.PuedePagar(montoAPagar))
             {
                 return false;
             }
 
-            return tarjeta.IntentarPagar(TARIFA_BASICA);
+            return tarjeta.IntentarPagar(montoAPagar);
         }
     }
 }

@@ -30,9 +30,7 @@ namespace TarjetaSubeTest
             foreach (int monto in montosPermitidos)
             {
                 var tarjetaTest = new Tarjeta();
-                
                 tarjetaTest.Cargar(monto);
-                
                 Assert.AreEqual(monto, tarjetaTest.Saldo);
             }
         }
@@ -47,7 +45,6 @@ namespace TarjetaSubeTest
         public void Cargar_SuperaSaldoMaximo_LanzaExcepcion()
         {
             tarjeta.Cargar(30000);
-
             Assert.Throws<InvalidOperationException>(() => tarjeta.Cargar(20000));
         }
 
@@ -55,9 +52,7 @@ namespace TarjetaSubeTest
         public void Pagar_SaldoSuficiente_ActualizaSaldo()
         {
             tarjeta.Cargar(5000);
-
             tarjeta.Pagar(1580);
-
             Assert.AreEqual(3420, tarjeta.Saldo);
         }
 
@@ -65,21 +60,26 @@ namespace TarjetaSubeTest
         public void Pagar_SaldoInsuficiente_LanzaExcepcion()
         {
             Tarjeta tarjetaConSaldoBajo = new Tarjeta(1000);
-
             Assert.Throws<InvalidOperationException>(() => tarjetaConSaldoBajo.Pagar(1580));
         }
 
         [Test]
         public void Constructor_SaldoNegativo_LanzaExcepcion()
         {
-            Assert.Throws<ArgumentException>(() => new Tarjeta(-100));
+            Assert.Throws<ArgumentException>(() => new Tarjeta(-1300));
+        }
+
+        [Test]
+        public void Constructor_SaldoInicialPermitido()
+        {
+            Tarjeta tarjetaConSaldo = new Tarjeta(5000);
+            Assert.AreEqual(5000, tarjetaConSaldo.Saldo);
         }
 
         [Test]
         public void Pagar_SuperaLimiteNegativo_LanzaExcepcion()
         {
             Tarjeta tarjeta = new Tarjeta(-1100);
-
             Assert.Throws<InvalidOperationException>(() => tarjeta.Pagar(200));
             Assert.AreEqual(-1100, tarjeta.Saldo);
         }
@@ -88,9 +88,8 @@ namespace TarjetaSubeTest
         public void PuedePagar_VerificaLimiteNegativo()
         {
             Tarjeta tarjeta = new Tarjeta(-1100);
-
-            Assert.IsTrue(tarjeta.PuedePagar(100)); 
-            Assert.IsFalse(tarjeta.PuedePagar(101)); 
+            Assert.IsTrue(tarjeta.PuedePagar(100));
+            Assert.IsFalse(tarjeta.PuedePagar(101));
         }
     }
 }
