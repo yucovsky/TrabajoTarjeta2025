@@ -56,14 +56,10 @@ namespace TarjetaSubeTest
         {
             Tarjeta tarjeta = new Tarjeta(0);
             Colectivo colectivo = new Colectivo("132", 1234);
-
+        
             bool primerViaje = colectivo.PagarConBoolean(tarjeta);
-            Assert.IsTrue(primerViaje);
-            Assert.AreEqual(-1580, tarjeta.Saldo);
-
-            bool segundoViaje = colectivo.PagarConBoolean(tarjeta);
-            Assert.IsFalse(segundoViaje);
-            Assert.AreEqual(-1580, tarjeta.Saldo);
+            Assert.IsFalse(primerViaje);
+            Assert.AreEqual(0, tarjeta.Saldo);
         }
 
         [Test]

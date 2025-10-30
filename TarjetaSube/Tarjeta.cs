@@ -39,7 +39,7 @@ namespace TarjetaSube
                 throw new ArgumentException("El monto a pagar debe ser positivo");
             
             if (!PuedePagar(monto))
-                throw new InvalidOperationException($"No se puede tener un saldo menor a ${SALDO_NEGATIVO_MAXIMO}");
+                throw new InvalidOperationException("Saldo insuficiente para realizar el pago");
             
             saldo -= monto;
         }
@@ -58,7 +58,7 @@ namespace TarjetaSube
 
         public virtual bool PuedePagar(int monto)
         {
-            return saldo - monto >= SALDO_NEGATIVO_MAXIMO;
+            return (saldo - monto >= SALDO_NEGATIVO_MAXIMO) && (saldo >= 0 || (saldo < 0 && monto <= Math.Abs(SALDO_NEGATIVO_MAXIMO - saldo)));
         }
 
         public virtual int CalcularMontoPasaje(int tarifaBase)

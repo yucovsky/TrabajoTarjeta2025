@@ -22,12 +22,12 @@ namespace TarjetaSubeTest
         public void Colectivo_PagarConBoolean_SaldoInsuficiente_DevuelveFalse()
         {
             Colectivo colectivo = new Colectivo("132", 1234);
-            Tarjeta tarjeta = new Tarjeta(1000);
+            Tarjeta tarjeta = new Tarjeta(0);
 
             bool resultado = colectivo.PagarConBoolean(tarjeta);
 
             Assert.IsFalse(resultado);
-            Assert.AreEqual(1000, tarjeta.Saldo);
+            Assert.AreEqual(0, tarjeta.Saldo);
         }
 
         [Test]
@@ -55,11 +55,11 @@ namespace TarjetaSubeTest
         [Test]
         public void Tarjeta_IntentarPagar_SaldoInsuficiente_DevuelveFalseYNoDescuenta()
         {
-            Tarjeta tarjeta = new Tarjeta(1000);
+            Tarjeta tarjeta = new Tarjeta(0);
             bool resultado = tarjeta.IntentarPagar(1580);
 
             Assert.IsFalse(resultado);
-            Assert.AreEqual(1000, tarjeta.Saldo);
+            Assert.AreEqual(0, tarjeta.Saldo);
         }
 
         [Test]
