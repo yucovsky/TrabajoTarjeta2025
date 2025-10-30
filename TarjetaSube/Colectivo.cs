@@ -27,18 +27,22 @@ namespace TarjetaSube
         public Boleto PagarCon(Tarjeta tarjeta)
         {
             int montoAPagar = tarjeta.CalcularMontoPasaje(TARIFA_BASICA);
+            int montoTotalAbonado = tarjeta.CalcularMontoTotalAbonado(TARIFA_BASICA);
             
             if (!tarjeta.PuedePagar(montoAPagar))
             {
                 throw new InvalidOperationException("No se puede realizar el viaje. Saldo insuficiente.");
             }
 
+            int saldoAnterior = tarjeta.Saldo;
+            
             if (!tarjeta.EsFranquiciaGratuita())
             {
                 tarjeta.Pagar(montoAPagar);
             }
             
-            return new Boleto(linea, interno, montoAPagar, DateTime.Now);
+            return new Boleto(linea, interno, montoAPagar, DateTime.Now, 
+                            tarjeta.TipoTarjeta, tarjeta.Saldo, tarjeta.Id, montoTotalAbonado);
         }
 
         public bool PagarConBoolean(Tarjeta tarjeta)
@@ -56,6 +60,11 @@ namespace TarjetaSube
             }
             
             return true;
+        }
+
+        public Boleto PagarConYGenerarBoleto(Tarjeta tarjeta)
+        {
+            return PagarCon(tarjeta);
         }
     }
 }
