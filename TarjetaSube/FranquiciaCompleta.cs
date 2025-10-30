@@ -6,6 +6,11 @@ namespace TarjetaSube
         {
         }
 
+        public override string TipoTarjeta
+        {
+            get { return "Franquicia Completa"; }
+        }
+
         public override int CalcularMontoPasaje(int tarifaBase)
         {
             return 0;
@@ -19,6 +24,11 @@ namespace TarjetaSube
         public override bool EsFranquiciaGratuita()
         {
             return true;
+        }
+
+        public override int CalcularMontoTotalAbonado(int tarifaBase)
+        {
+            return 0;
         }
     }
 }

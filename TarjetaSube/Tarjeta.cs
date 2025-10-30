@@ -8,6 +8,8 @@ namespace TarjetaSube
         private const int SALDO_MAXIMO = 40000;
         private const int SALDO_NEGATIVO_MAXIMO = -1200;
         private static readonly int[] CARGAS_PERMITIDAS = { 2000, 3000, 4000, 5000, 8000, 10000, 15000, 20000, 25000, 30000 };
+        private static int nextId = 1;
+        private int id;
 
         public Tarjeta(int saldo = 0)
         {
@@ -15,11 +17,22 @@ namespace TarjetaSube
                 throw new ArgumentException($"El saldo inicial no puede ser menor a ${SALDO_NEGATIVO_MAXIMO}");
             
             this.saldo = saldo;
+            this.id = nextId++;
+        }
+
+        public int Id
+        {
+            get { return id; }
         }
 
         public int Saldo
         {
             get { return saldo; }
+        }
+
+        public virtual string TipoTarjeta
+        {
+            get { return "Normal"; }
         }
         
         public void Cargar(int importe)
@@ -58,7 +71,8 @@ namespace TarjetaSube
 
         public virtual bool PuedePagar(int monto)
         {
-            return (saldo - monto >= SALDO_NEGATIVO_MAXIMO) && (saldo >= 0 || (saldo < 0 && monto <= Math.Abs(SALDO_NEGATIVO_MAXIMO - saldo)));
+            int saldoDespuesDePago = saldo - monto;
+            return saldoDespuesDePago >= SALDO_NEGATIVO_MAXIMO;
         }
 
         public virtual int CalcularMontoPasaje(int tarifaBase)
@@ -69,6 +83,18 @@ namespace TarjetaSube
         public virtual bool EsFranquiciaGratuita()
         {
             return false;
+        }
+
+        public virtual int CalcularMontoTotalAbonado(int tarifaBase)
+        {
+            int montoPasaje = CalcularMontoPasaje(tarifaBase);
+            
+            if (saldo < 0)
+            {
+                return montoPasaje + Math.Abs(saldo);
+            }
+
+            return montoPasaje;
         }
 
         private bool EsCargaValida(int importe)
