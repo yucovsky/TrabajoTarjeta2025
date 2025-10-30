@@ -43,6 +43,18 @@ namespace TarjetaSube
             saldo -= monto;
         }
 
+        public bool IntentarPagar(int monto)
+        {
+            if (monto <= 0)
+                return false;
+            
+            if (saldo < monto)
+                return false;
+            
+            saldo -= monto;
+            return true;
+        }
+
         private bool EsCargaValida(int importe)
         {
             foreach (int carga in CARGAS_PERMITIDAS)
