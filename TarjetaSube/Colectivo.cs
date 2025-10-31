@@ -36,6 +36,11 @@ namespace TarjetaSube
 
             int saldoAnterior = tarjeta.Saldo;
             
+            if (tarjeta is MedioBoletoEstudiantil medioBoleto)
+            {
+                medioBoleto.RegistrarViaje(DateTime.Now);
+            }
+            
             if (!tarjeta.EsFranquiciaGratuita())
             {
                 tarjeta.Pagar(montoAPagar);
@@ -54,6 +59,18 @@ namespace TarjetaSube
                 return false;
             }
 
+            if (tarjeta is MedioBoletoEstudiantil medioBoleto)
+            {
+                try
+                {
+                    medioBoleto.RegistrarViaje(DateTime.Now);
+                }
+                catch (InvalidOperationException)
+                {
+                    return false;
+                }
+            }
+
             if (!tarjeta.EsFranquiciaGratuita())
             {
                 return tarjeta.IntentarPagar(montoAPagar);
@@ -62,9 +79,28 @@ namespace TarjetaSube
             return true;
         }
 
-        public Boleto PagarConYGenerarBoleto(Tarjeta tarjeta)
+        public Boleto PagarConEnFecha(Tarjeta tarjeta, DateTime fechaHora)
         {
-            return PagarCon(tarjeta);
+            if (tarjeta is MedioBoletoEstudiantil medioBoleto)
+            {
+                medioBoleto.RegistrarViaje(fechaHora); 
+            }
+
+            int montoAPagar = tarjeta.CalcularMontoPasaje(TARIFA_BASICA);
+            int montoTotalAbonado = tarjeta.CalcularMontoTotalAbonado(TARIFA_BASICA);
+
+            if (!tarjeta.PuedePagar(montoAPagar))
+            {
+                throw new InvalidOperationException("No se puede realizar el viaje. Saldo insuficiente.");
+            }
+
+            if (!tarjeta.EsFranquiciaGratuita())
+            {
+                tarjeta.Pagar(montoAPagar);
+            }
+
+            return new Boleto(linea, interno, montoAPagar, fechaHora, 
+                            tarjeta.TipoTarjeta, tarjeta.Saldo, tarjeta.Id, montoTotalAbonado);
         }
     }
 }

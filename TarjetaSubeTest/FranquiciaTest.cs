@@ -1,5 +1,6 @@
 using TarjetaSube;
 using NUnit.Framework;
+using System;
 
 namespace TarjetaSubeTest
 {
@@ -51,15 +52,15 @@ namespace TarjetaSubeTest
         {
             MedioBoletoEstudiantil tarjeta = new MedioBoletoEstudiantil(5000);
             Colectivo colectivo = new Colectivo("132", 1234);
-            int medioBoleto = TARIFA_BASICA / 2;
+            
+            DateTime primerViaje = new DateTime(2024, 10, 30, 10, 0, 0);
+            DateTime segundoViaje = new DateTime(2024, 10, 30, 10, 6, 0); 
 
-            bool primerViaje = colectivo.PagarConBoolean(tarjeta);
-            Assert.IsTrue(primerViaje);
-            Assert.AreEqual(5000 - medioBoleto, tarjeta.Saldo);
+            Boleto boleto1 = colectivo.PagarConEnFecha(tarjeta, primerViaje);
+            Assert.AreEqual(TARIFA_BASICA / 2, boleto1.Monto);
 
-            bool segundoViaje = colectivo.PagarConBoolean(tarjeta);
-            Assert.IsTrue(segundoViaje);
-            Assert.AreEqual(5000 - (medioBoleto * 2), tarjeta.Saldo);
+            Boleto boleto2 = colectivo.PagarConEnFecha(tarjeta, segundoViaje);
+            Assert.AreEqual(TARIFA_BASICA / 2, boleto2.Monto);
         }
 
         [Test]
