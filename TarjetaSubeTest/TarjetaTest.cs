@@ -42,10 +42,13 @@ namespace TarjetaSubeTest
         }
 
         [Test]
-        public void Cargar_SuperaSaldoMaximo_LanzaExcepcion()
+        public void Cargar_SuperaSaldoMaximo_GuardaExcedenteComoPendiente()
         {
             tarjeta.Cargar(30000);
-            Assert.Throws<InvalidOperationException>(() => tarjeta.Cargar(20000));
+            tarjeta.Cargar(30000);
+            
+            Assert.AreEqual(56000, tarjeta.Saldo);
+            Assert.AreEqual(4000, tarjeta.SaldoPendiente);
         }
 
         [Test]

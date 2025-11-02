@@ -5,7 +5,8 @@ namespace TarjetaSube
     public class Tarjeta
     {
         protected int saldo;
-        private const int SALDO_MAXIMO = 40000;
+        private int saldoPendiente;
+        private const int SALDO_MAXIMO = 56000;
         private const int SALDO_NEGATIVO_MAXIMO = -1200;
         private static readonly int[] CARGAS_PERMITIDAS = { 2000, 3000, 4000, 5000, 8000, 10000, 15000, 20000, 25000, 30000 };
         private static int nextId = 1;
@@ -17,6 +18,7 @@ namespace TarjetaSube
                 throw new ArgumentException($"El saldo inicial no puede ser menor a ${SALDO_NEGATIVO_MAXIMO}");
             
             this.saldo = saldo;
+            this.saldoPendiente = 0;
             this.id = nextId++;
         }
 
@@ -30,6 +32,11 @@ namespace TarjetaSube
             get { return saldo; }
         }
 
+        public int SaldoPendiente
+        {
+            get { return saldoPendiente; }
+        }
+
         public virtual string TipoTarjeta
         {
             get { return "Normal"; }
@@ -40,10 +47,29 @@ namespace TarjetaSube
             if (!EsCargaValida(importe))
                 throw new ArgumentException($"La carga de ${importe} no está permitida. Cargas permitidas: {string.Join(", ", CARGAS_PERMITIDAS)}");
             
-            if (saldo + importe > SALDO_MAXIMO)
-                throw new InvalidOperationException($"No se puede superar el saldo máximo de ${SALDO_MAXIMO}");
+            int espacioDisponible = SALDO_MAXIMO - saldo;
             
-            saldo += importe;
+            if (espacioDisponible > 0)
+            {
+                int montoAAcreditar = Math.Min(importe, espacioDisponible);
+                saldo += montoAAcreditar;
+                saldoPendiente += (importe - montoAAcreditar);
+            }
+            else
+            {
+                saldoPendiente += importe;
+            }
+        }
+
+        public void AcreditarCarga()
+        {
+            if (saldoPendiente > 0 && saldo < SALDO_MAXIMO)
+            {
+                int espacioDisponible = SALDO_MAXIMO - saldo;
+                int montoAAcreditar = Math.Min(saldoPendiente, espacioDisponible);
+                saldo += montoAAcreditar;
+                saldoPendiente -= montoAAcreditar;
+            }
         }
 
         public void Pagar(int monto)
@@ -55,6 +81,7 @@ namespace TarjetaSube
                 throw new InvalidOperationException("Saldo insuficiente para realizar el pago");
             
             saldo -= monto;
+            AcreditarCarga();
         }
 
         public bool IntentarPagar(int monto)
@@ -66,6 +93,7 @@ namespace TarjetaSube
                 return false;
             
             saldo -= monto;
+            AcreditarCarga();
             return true;
         }
 
