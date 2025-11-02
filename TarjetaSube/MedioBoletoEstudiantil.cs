@@ -26,6 +26,12 @@ namespace TarjetaSube
             return viajesHoy.Count < MAX_VIAJES_POR_DIA ? tarifaBase / 2 : tarifaBase;
         }
 
+        public override int CalcularMontoPasajeEnFecha(int tarifaBase, DateTime fechaReferencia)
+        {
+            LimpiarViajesAntiguos(fechaReferencia);
+            return viajesHoy.Count < MAX_VIAJES_POR_DIA ? tarifaBase / 2 : tarifaBase;
+        }
+
         public void RegistrarViaje(DateTime fechaHoraViaje)
         {
             LimpiarViajesAntiguos(fechaHoraViaje);
