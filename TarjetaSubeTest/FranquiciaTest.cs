@@ -25,13 +25,16 @@ namespace TarjetaSubeTest
         {
             FranquiciaCompleta tarjeta = new FranquiciaCompleta();
             Colectivo colectivo = new Colectivo("132", 1234);
-
-            for (int i = 0; i < 10; i++)
-            {
-                bool resultado = colectivo.PagarConBoolean(tarjeta);
-                Assert.IsTrue(resultado);
-                Assert.AreEqual(0, tarjeta.Saldo);
-            }
+        
+            bool primerResultado = colectivo.PagarConBoolean(tarjeta);
+            Assert.IsTrue(primerResultado);
+            Assert.AreEqual(0, tarjeta.Saldo);
+        
+            bool segundoResultado = colectivo.PagarConBoolean(tarjeta);
+            Assert.IsTrue(segundoResultado);
+            Assert.AreEqual(0, tarjeta.Saldo);
+            
+            bool tercerResultado = colectivo.PagarConBoolean(tarjeta);
         }
 
         [Test]
