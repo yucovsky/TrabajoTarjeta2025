@@ -24,7 +24,7 @@ namespace TarjetaSube
             return CalcularMontoPasajeEnFecha(tarifaBase, DateTime.Now);
         }
 
-        public int CalcularMontoPasajeEnFecha(int tarifaBase, DateTime fechaReferencia)
+        public override int CalcularMontoPasajeEnFecha(int tarifaBase, DateTime fechaReferencia)
         {
             LimpiarViajesAntiguos(fechaReferencia);
             return viajesGratuitosHoy.Count < MAX_VIAJES_GRATUITOS_POR_DIA ? 0 : tarifaBase;
@@ -32,14 +32,13 @@ namespace TarjetaSube
 
         public void RegistrarViajeGratuito(DateTime fechaHoraViaje)
         {
-            
             LimpiarViajesAntiguos(fechaHoraViaje);
             
             if (viajesGratuitosHoy.Count >= MAX_VIAJES_GRATUITOS_POR_DIA)
             {
                 throw new InvalidOperationException($"Límite de {MAX_VIAJES_GRATUITOS_POR_DIA} viajes gratuitos por día alcanzado");
             }
-        
+
             viajesGratuitosHoy.Add(fechaHoraViaje);
         }
 
