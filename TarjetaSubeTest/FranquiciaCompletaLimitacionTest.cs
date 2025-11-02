@@ -186,5 +186,38 @@ namespace TarjetaSubeTest
             int montoTercerViaje = tarjeta.CalcularMontoPasajeEnFecha(TARIFA_BASICA, new DateTime(2024, 10, 30, 12, 0, 0));
             Assert.AreEqual(TARIFA_BASICA, montoTercerViaje);
         }
+
+        [Test]
+        public void MedioBoletoEstudiantil_UltimoViaje_NullCuandoNoHayViajes()
+        {
+            MedioBoletoEstudiantil tarjeta = new MedioBoletoEstudiantil(1000);
+            Assert.IsNull(tarjeta.UltimoViaje);
+        }
+
+        [Test]
+        public void MedioBoletoEstudiantil_UltimoViaje_RetornaUltimoViajeRegistrado()
+        {
+            MedioBoletoEstudiantil tarjeta = new MedioBoletoEstudiantil(1000);
+            DateTime hoy = DateTime.Today;
+            DateTime primerViaje = hoy.AddHours(10);
+            DateTime segundoViaje = hoy.AddHours(11);
+            
+            tarjeta.RegistrarViaje(primerViaje);
+            tarjeta.RegistrarViaje(segundoViaje);
+            
+            Assert.AreEqual(segundoViaje, tarjeta.UltimoViaje);
+        }
+
+        [Test]
+        public void MedioBoletoEstudiantil_CalcularMontoTotalAbonado_ConSaldoNegativo()
+        {
+            MedioBoletoEstudiantil tarjeta = new MedioBoletoEstudiantil(-500);
+            
+            int montoTotal = tarjeta.CalcularMontoTotalAbonado(1580);
+            int montoPasaje = 790;
+            int expected = montoPasaje + 500;
+            
+            Assert.AreEqual(expected, montoTotal);
+        }
     }
 }

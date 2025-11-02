@@ -31,28 +31,17 @@ namespace TarjetaSube
         }
 
         public void RegistrarViajeGratuito(DateTime fechaHoraViaje)
-{
-    Console.WriteLine($"=== REGISTRAR VIAJE GRATUITO BGE ===");
-    Console.WriteLine($"Fecha: {fechaHoraViaje}");
-    Console.WriteLine($"Viajes antes de limpiar: {viajesGratuitosHoy.Count}");
-    Console.WriteLine($"Contenido antes: {string.Join(", ", viajesGratuitosHoy)}");
-    
-    LimpiarViajesAntiguos(fechaHoraViaje);
-    
-    Console.WriteLine($"Viajes después de limpiar: {viajesGratuitosHoy.Count}");
-    Console.WriteLine($"Contenido después: {string.Join(", ", viajesGratuitosHoy)}");
-    Console.WriteLine($"Límite: {MAX_VIAJES_GRATUITOS_POR_DIA}");
-    
-    if (viajesGratuitosHoy.Count >= MAX_VIAJES_GRATUITOS_POR_DIA)
-    {
-        Console.WriteLine($"❌ LÍMITE ALCANZADO: {viajesGratuitosHoy.Count} >= {MAX_VIAJES_GRATUITOS_POR_DIA}");
-        throw new InvalidOperationException($"Límite de {MAX_VIAJES_GRATUITOS_POR_DIA} viajes gratuitos por día alcanzado");
-    }
-
-    viajesGratuitosHoy.Add(fechaHoraViaje);
-    Console.WriteLine($"✅ Viaje registrado. Total: {viajesGratuitosHoy.Count}");
-    Console.WriteLine($"=== FIN REGISTRAR VIAJE GRATUITO BGE ===\n");
-}
+        {
+            
+            LimpiarViajesAntiguos(fechaHoraViaje);
+            
+            if (viajesGratuitosHoy.Count >= MAX_VIAJES_GRATUITOS_POR_DIA)
+            {
+                throw new InvalidOperationException($"Límite de {MAX_VIAJES_GRATUITOS_POR_DIA} viajes gratuitos por día alcanzado");
+            }
+        
+            viajesGratuitosHoy.Add(fechaHoraViaje);
+        }
 
         public int ViajesGratuitosHoyEnFecha(DateTime fechaReferencia)
         {

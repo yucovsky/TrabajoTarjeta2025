@@ -35,5 +35,28 @@ namespace TarjetaSubeTest
             Tarjeta tarjetaSinSaldo = new Tarjeta(0);
             Assert.Throws<InvalidOperationException>(() => colectivo.PagarCon(tarjetaSinSaldo));
         }
+
+        [Test]
+        public void Colectivo_LineaEInterno_GetterFuncionan()
+        {
+            Colectivo colectivo = new Colectivo("132", 1234);
+            
+            Assert.AreEqual("132", colectivo.Linea);
+            Assert.AreEqual(1234, colectivo.Interno);
+        }
+
+        [Test]
+        public void Colectivo_PagarConEnFecha_TarjetaNormal_FuncionaCorrectamente()
+        {
+            Colectivo colectivo = new Colectivo("132", 1234);
+            Tarjeta tarjeta = new Tarjeta(2000);
+            DateTime fechaEspecifica = new DateTime(2024, 10, 30, 14, 30, 0);
+
+            Boleto boleto = colectivo.PagarConEnFecha(tarjeta, fechaEspecifica);
+
+            Assert.IsNotNull(boleto);
+            Assert.AreEqual(fechaEspecifica, boleto.FechaHora);
+            Assert.AreEqual(420, tarjeta.Saldo);
+        }
     }
 }

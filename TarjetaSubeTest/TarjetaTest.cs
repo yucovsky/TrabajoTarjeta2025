@@ -91,5 +91,19 @@ namespace TarjetaSubeTest
             Assert.IsTrue(tarjeta.PuedePagar(100));
             Assert.IsFalse(tarjeta.PuedePagar(101));
         }
+
+        [Test]
+        public void Pagar_MontoCero_LanzaExcepcion()
+        {
+            Tarjeta tarjeta = new Tarjeta(1000);
+            Assert.Throws<ArgumentException>(() => tarjeta.Pagar(0));
+        }
+
+        [Test]
+        public void Pagar_MontoNegativo_LanzaExcepcion()
+        {
+            Tarjeta tarjeta = new Tarjeta(1000);
+            Assert.Throws<ArgumentException>(() => tarjeta.Pagar(-100));
+        }
     }
 }

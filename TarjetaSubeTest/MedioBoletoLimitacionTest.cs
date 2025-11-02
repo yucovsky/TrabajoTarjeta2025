@@ -117,5 +117,7 @@ namespace TarjetaSubeTest
             bool segundoViaje = colectivo.PagarConBoolean(tarjeta);
             Assert.IsFalse(segundoViaje);
         }
+
+        
     }
 }
