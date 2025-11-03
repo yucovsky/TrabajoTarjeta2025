@@ -22,7 +22,7 @@ namespace TarjetaSube
         public override int CalcularMontoPasaje(int tarifaBase)
         {
             LimpiarViajesAntiguos(DateTime.Now);
-            return viajesGratuitosHoy.Count < MAX_VIAJES_GRATUITOS_POR_DIA ? 0 : tarifaBase;
+            return CalcularMontoPasajeEnFecha(tarifaBase, DateTime.Now);
         }
 
         public void RegistrarViajeGratuito(DateTime fechaHoraViaje)

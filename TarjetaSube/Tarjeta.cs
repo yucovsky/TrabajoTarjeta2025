@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace TarjetaSube
 {
@@ -11,6 +13,7 @@ namespace TarjetaSube
         private static readonly int[] CARGAS_PERMITIDAS = { 2000, 3000, 4000, 5000, 8000, 10000, 15000, 20000, 25000, 30000 };
         private static int nextId = 1;
         private int id;
+        protected List<DateTime> viajes;
 
         public Tarjeta(int saldo = 0)
         {
@@ -20,6 +23,7 @@ namespace TarjetaSube
             this.saldo = saldo;
             this.saldoPendiente = 0;
             this.id = nextId++;
+            this.viajes = new List<DateTime>();
         }
 
         public int Id
@@ -35,6 +39,19 @@ namespace TarjetaSube
         public int SaldoPendiente
         {
             get { return saldoPendiente; }
+        }
+
+        public int ViajesEsteMes
+        {
+            get 
+            { 
+                return ObtenerViajesDelMes(DateTime.Now).Count; 
+            }
+        }
+
+        public int ViajesEnMes(DateTime fecha)
+        {
+            return ObtenerViajesDelMes(fecha).Count;
         }
 
         public virtual string TipoTarjeta
@@ -105,7 +122,54 @@ namespace TarjetaSube
 
         public virtual int CalcularMontoPasaje(int tarifaBase)
         {
+            return CalcularMontoPasajeEnFecha(tarifaBase, DateTime.Now);
+        }
+
+        public virtual int CalcularMontoPasajeEnFecha(int tarifaBase, DateTime fechaReferencia)
+        {
+            if (!EsFranquiciaGratuita())
+            {
+                List<DateTime> viajesDelMes = ObtenerViajesDelMes(fechaReferencia);
+                int monto = CalcularMontoConDescuento(tarifaBase, viajesDelMes.Count);
+                return monto;
+            }
             return tarifaBase;
+        }
+
+        private int CalcularMontoConDescuento(int tarifaBase, int cantidadViajesPrevios)
+        {
+
+            if (cantidadViajesPrevios <= 28)
+            {
+                return tarifaBase;
+            }
+
+            if (cantidadViajesPrevios >= 29 && cantidadViajesPrevios <= 58)
+            {
+                int montoConDescuento = (int)(tarifaBase * 0.8);
+                return montoConDescuento;
+            }
+
+            if (cantidadViajesPrevios >= 59 && cantidadViajesPrevios <= 79)
+            {
+                int montoConDescuento = (int)(tarifaBase * 0.75);
+                return montoConDescuento;
+            }
+            
+            return tarifaBase;
+        }
+
+        public virtual void RegistrarViaje(DateTime fechaViaje)
+        {
+            viajes.Add(fechaViaje);
+        }
+
+        private List<DateTime> ObtenerViajesDelMes(DateTime fechaReferencia)
+        {
+            DateTime primerDiaDelMes = new DateTime(fechaReferencia.Year, fechaReferencia.Month, 1);
+            DateTime ultimoDiaDelMes = primerDiaDelMes.AddMonths(1).AddDays(-1);
+            
+            return viajes.Where(v => v >= primerDiaDelMes && v <= ultimoDiaDelMes).ToList();
         }
 
         public virtual bool EsFranquiciaGratuita()
