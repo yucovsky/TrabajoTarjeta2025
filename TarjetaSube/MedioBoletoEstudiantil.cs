@@ -22,18 +22,22 @@ namespace TarjetaSube
 
         public override int CalcularMontoPasaje(int tarifaBase)
         {
-            LimpiarViajesAntiguos(DateTime.Now);
-            return viajesHoy.Count < MAX_VIAJES_POR_DIA ? tarifaBase / 2 : tarifaBase;
-        }
+            if (!EsFranjaHorariaValida(DateTime.Now))
+            {
+                return tarifaBase;
+            }
 
-        public override int CalcularMontoPasajeEnFecha(int tarifaBase, DateTime fechaReferencia)
-        {
-            LimpiarViajesAntiguos(fechaReferencia);
+            LimpiarViajesAntiguos(DateTime.Now);
             return viajesHoy.Count < MAX_VIAJES_POR_DIA ? tarifaBase / 2 : tarifaBase;
         }
 
         public void RegistrarViaje(DateTime fechaHoraViaje)
         {
+            if (!EsFranjaHorariaValida(fechaHoraViaje))
+            {
+                throw new InvalidOperationException("No se puede utilizar el medio boleto fuera de la franja horaria permitida (Lunes a Viernes 6-22)");
+            }
+
             LimpiarViajesAntiguos(fechaHoraViaje);
 
             if (viajesHoy.Count >= MAX_VIAJES_POR_DIA)
@@ -76,6 +80,23 @@ namespace TarjetaSube
         {
             DateTime hoy = fechaReferencia.Date; 
             viajesHoy.RemoveAll(viaje => viaje.Date < hoy);
+        }
+
+        private bool EsFranjaHorariaValida(DateTime fechaHora)
+        {
+            return fechaHora.DayOfWeek >= DayOfWeek.Monday && 
+                   fechaHora.DayOfWeek <= DayOfWeek.Friday && 
+                   fechaHora.Hour >= 6 && 
+                   fechaHora.Hour < 22;
+        }
+
+        public override bool PuedePagar(int monto)
+        {
+            if (!EsFranjaHorariaValida(DateTime.Now))
+            {
+                return false;
+            }
+            return base.PuedePagar(monto);
         }
 
         public override bool EsFranquiciaGratuita()

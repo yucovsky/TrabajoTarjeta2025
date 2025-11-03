@@ -91,16 +91,17 @@ namespace TarjetaSubeTest
         {
             Colectivo colectivo = new Colectivo("132", 1234);
             MedioBoletoEstudiantil tarjeta = new MedioBoletoEstudiantil(5000);
-
-            DateTime dia1Viaje1 = new DateTime(2024, 10, 30, 23, 0, 0);
-            DateTime dia1Viaje2 = new DateTime(2024, 10, 30, 23, 6, 0);
-            DateTime dia2Viaje1 = new DateTime(2024, 10, 31, 1, 0, 0);
-
+        
+            // Cambiar fechas a dentro de franja horaria
+            DateTime dia1Viaje1 = new DateTime(2024, 10, 25, 10, 0, 0); // Viernes 10 AM
+            DateTime dia1Viaje2 = new DateTime(2024, 10, 25, 10, 6, 0); // Viernes 10:06 AM
+            DateTime dia2Viaje1 = new DateTime(2024, 10, 28, 10, 0, 0); // Lunes 10 AM
+        
             Boleto boleto1 = colectivo.PagarConEnFecha(tarjeta, dia1Viaje1);
             Boleto boleto2 = colectivo.PagarConEnFecha(tarjeta, dia1Viaje2);
             Assert.AreEqual(TARIFA_BASICA / 2, boleto1.Monto);
             Assert.AreEqual(TARIFA_BASICA / 2, boleto2.Monto);
-
+        
             Boleto boleto3 = colectivo.PagarConEnFecha(tarjeta, dia2Viaje1);
             Assert.AreEqual(TARIFA_BASICA / 2, boleto3.Monto);
         }
