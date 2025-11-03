@@ -4,30 +4,45 @@ using System.Linq;
 
 namespace TarjetaSube
 {
-    public class MedioBoletoEstudiantil : Tarjeta
+    public class MedioBoletoEstudiantilRestringido : Tarjeta
     {
         private List<DateTime> viajesHoy;
         private const int MINUTOS_ENTRE_VIAJES = 5;
         private const int MAX_VIAJES_POR_DIA = 2;
 
-        public MedioBoletoEstudiantil(int saldo = 0) : base(saldo)
+        public MedioBoletoEstudiantilRestringido(int saldo = 0) : base(saldo)
         {
             viajesHoy = new List<DateTime>();
         }
 
         public override string TipoTarjeta
         {
-            get { return "Medio Boleto Estudiantil"; }
+            get { return "Medio Boleto Estudiantil Restringido"; }
         }
 
         public override int CalcularMontoPasaje(int tarifaBase)
         {
-            LimpiarViajesAntiguos(DateTime.Now);
+            return CalcularMontoPasajeEnFecha(tarifaBase, DateTime.Now);
+        }
+
+        public int CalcularMontoPasajeEnFecha(int tarifaBase, DateTime fechaReferencia)
+        {
+            if (!ValidadorFranjaHoraria.EstaEnFranjaHorariaPermitida(fechaReferencia))
+            {
+                return tarifaBase;
+            }
+
+            LimpiarViajesAntiguos(fechaReferencia);
             return viajesHoy.Count < MAX_VIAJES_POR_DIA ? tarifaBase / 2 : tarifaBase;
         }
 
         public void RegistrarViaje(DateTime fechaHoraViaje)
         {
+            if (!ValidadorFranjaHoraria.EstaEnFranjaHorariaPermitida(fechaHoraViaje))
+            {
+                throw new InvalidOperationException("No se puede utilizar el medio boleto fuera de la franja horaria permitida");
+            }
+
             LimpiarViajesAntiguos(fechaHoraViaje);
 
             if (viajesHoy.Count >= MAX_VIAJES_POR_DIA)
@@ -46,24 +61,6 @@ namespace TarjetaSube
             }
 
             viajesHoy.Add(fechaHoraViaje);
-        }
-
-        public int ViajesHoy
-        {
-            get 
-            { 
-                LimpiarViajesAntiguos(DateTime.Now);
-                return viajesHoy.Count; 
-            }
-        }
-
-        public DateTime? UltimoViaje
-        {
-            get 
-            { 
-                LimpiarViajesAntiguos(DateTime.Now);
-                return viajesHoy.Count > 0 ? viajesHoy.Last() : (DateTime?)null; 
-            }
         }
 
         private void LimpiarViajesAntiguos(DateTime fechaReferencia)
@@ -87,10 +84,13 @@ namespace TarjetaSube
             return montoPasaje;
         }
 
-        public int CalcularMontoPasajeEnFecha(int tarifaBase, DateTime fechaReferencia)
+        public override bool PuedePagar(int monto)
         {
-            LimpiarViajesAntiguos(fechaReferencia);
-            return viajesHoy.Count < MAX_VIAJES_POR_DIA ? tarifaBase / 2 : tarifaBase;
+            if (!ValidadorFranjaHoraria.EstaEnFranjaHorariaPermitida(DateTime.Now))
+            {
+                return base.PuedePagar(monto);
+            }
+            return base.PuedePagar(monto);
         }
     }
 }
