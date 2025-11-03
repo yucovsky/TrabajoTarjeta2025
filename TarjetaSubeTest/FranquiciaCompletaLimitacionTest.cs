@@ -45,24 +45,6 @@ namespace TarjetaSubeTest
         }
 
         [Test]
-        public void BoletoGratuitoEstudiantil_ReiniciaContadorAlDiaSiguiente()
-        {
-            BoletoGratuitoEstudiantil tarjeta = new BoletoGratuitoEstudiantil(5000);
-
-            DateTime dia1Viaje1 = new DateTime(2024, 10, 30, 23, 0, 0);
-            DateTime dia1Viaje2 = new DateTime(2024, 10, 30, 23, 30, 0);
-            DateTime dia2Viaje1 = new DateTime(2024, 10, 31, 1, 0, 0);
-
-            tarjeta.RegistrarViajeGratuito(dia1Viaje1);
-            tarjeta.RegistrarViajeGratuito(dia1Viaje2);
-
-            Assert.AreEqual(2, tarjeta.ViajesGratuitosHoyEnFecha(dia1Viaje2));
-
-            tarjeta.RegistrarViajeGratuito(dia2Viaje1);
-            Assert.AreEqual(1, tarjeta.ViajesGratuitosHoyEnFecha(dia2Viaje1));
-        }
-
-        [Test]
         public void FranquiciaCompleta_NoPermiteMasDeDosViajesGratuitosPorDia()
         {
             Colectivo colectivo = new Colectivo("132", 1234);
@@ -99,22 +81,42 @@ namespace TarjetaSubeTest
         }
 
         [Test]
-        public void FranquiciaCompleta_ReiniciaContadorAlDiaSiguiente()
-        {
-            FranquiciaCompleta tarjeta = new FranquiciaCompleta(5000);
+public void BoletoGratuitoEstudiantil_ReiniciaContadorAlDiaSiguiente()
+{
+    BoletoGratuitoEstudiantil tarjeta = new BoletoGratuitoEstudiantil(5000);
 
-            DateTime dia1Viaje1 = new DateTime(2024, 10, 30, 23, 0, 0);
-            DateTime dia1Viaje2 = new DateTime(2024, 10, 30, 23, 30, 0);
-            DateTime dia2Viaje1 = new DateTime(2024, 10, 31, 1, 0, 0); 
+    // Cambiar fechas a dentro de franja horaria
+    DateTime dia1Viaje1 = new DateTime(2024, 10, 25, 10, 0, 0); // Viernes 10 AM
+    DateTime dia1Viaje2 = new DateTime(2024, 10, 25, 11, 0, 0); // Viernes 11 AM
+    DateTime dia2Viaje1 = new DateTime(2024, 10, 28, 10, 0, 0); // Lunes 10 AM
 
-            tarjeta.RegistrarViajeGratuito(dia1Viaje1);
-            tarjeta.RegistrarViajeGratuito(dia1Viaje2);
+    tarjeta.RegistrarViajeGratuito(dia1Viaje1);
+    tarjeta.RegistrarViajeGratuito(dia1Viaje2);
 
-            Assert.AreEqual(2, tarjeta.ViajesGratuitosHoyEnFecha(dia1Viaje2));
+    Assert.AreEqual(2, tarjeta.ViajesGratuitosHoyEnFecha(dia1Viaje2));
 
-            tarjeta.RegistrarViajeGratuito(dia2Viaje1);
-            Assert.AreEqual(1, tarjeta.ViajesGratuitosHoyEnFecha(dia2Viaje1));
-        }
+    tarjeta.RegistrarViajeGratuito(dia2Viaje1);
+    Assert.AreEqual(1, tarjeta.ViajesGratuitosHoyEnFecha(dia2Viaje1));
+}
+
+[Test]
+public void FranquiciaCompleta_ReiniciaContadorAlDiaSiguiente()
+{
+    FranquiciaCompleta tarjeta = new FranquiciaCompleta(5000);
+
+    // Cambiar fechas a dentro de franja horaria
+    DateTime dia1Viaje1 = new DateTime(2024, 10, 25, 10, 0, 0); // Viernes 10 AM
+    DateTime dia1Viaje2 = new DateTime(2024, 10, 25, 11, 0, 0); // Viernes 11 AM
+    DateTime dia2Viaje1 = new DateTime(2024, 10, 28, 10, 0, 0); // Lunes 10 AM
+
+    tarjeta.RegistrarViajeGratuito(dia1Viaje1);
+    tarjeta.RegistrarViajeGratuito(dia1Viaje2);
+
+    Assert.AreEqual(2, tarjeta.ViajesGratuitosHoyEnFecha(dia1Viaje2));
+
+    tarjeta.RegistrarViajeGratuito(dia2Viaje1);
+    Assert.AreEqual(1, tarjeta.ViajesGratuitosHoyEnFecha(dia2Viaje1));
+}
 
         [Test]
         public void FranquiciaCompleta_ViajesGratuitosHoy_ContadorCorrecto()

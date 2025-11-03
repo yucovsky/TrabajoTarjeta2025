@@ -21,24 +21,29 @@ namespace TarjetaSube
 
         public override int CalcularMontoPasaje(int tarifaBase)
         {
-            return CalcularMontoPasajeEnFecha(tarifaBase, DateTime.Now);
-        }
+            if (!EsFranjaHorariaValida(DateTime.Now))
+            {
+                throw new InvalidOperationException("No se puede utilizar el boleto gratuito estudiantil fuera de la franja horaria permitida (Lunes a Viernes 6-22)");
+            }
 
-        public override int CalcularMontoPasajeEnFecha(int tarifaBase, DateTime fechaReferencia)
-        {
-            LimpiarViajesAntiguos(fechaReferencia);
+            LimpiarViajesAntiguos(DateTime.Now);
             return viajesGratuitosHoy.Count < MAX_VIAJES_GRATUITOS_POR_DIA ? 0 : tarifaBase;
         }
 
         public void RegistrarViajeGratuito(DateTime fechaHoraViaje)
         {
+            if (!EsFranjaHorariaValida(fechaHoraViaje))
+            {
+                throw new InvalidOperationException("No se puede utilizar el boleto gratuito estudiantil fuera de la franja horaria permitida (Lunes a Viernes 6-22)");
+            }
+            
             LimpiarViajesAntiguos(fechaHoraViaje);
             
             if (viajesGratuitosHoy.Count >= MAX_VIAJES_GRATUITOS_POR_DIA)
             {
                 throw new InvalidOperationException($"Límite de {MAX_VIAJES_GRATUITOS_POR_DIA} viajes gratuitos por día alcanzado");
             }
-
+        
             viajesGratuitosHoy.Add(fechaHoraViaje);
         }
 
@@ -62,8 +67,20 @@ namespace TarjetaSube
             viajesGratuitosHoy.RemoveAll(viaje => viaje.Date < hoy);
         }
 
+        private bool EsFranjaHorariaValida(DateTime fechaHora)
+        {
+            return fechaHora.DayOfWeek >= DayOfWeek.Monday && 
+                   fechaHora.DayOfWeek <= DayOfWeek.Friday && 
+                   fechaHora.Hour >= 6 && 
+                   fechaHora.Hour < 22;
+        }
+
         public override bool PuedePagar(int monto)
         {
+            if (!EsFranjaHorariaValida(DateTime.Now))
+            {
+                return false;
+            }
             return true;
         }
 
