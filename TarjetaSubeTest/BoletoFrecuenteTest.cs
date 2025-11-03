@@ -54,11 +54,11 @@ namespace TarjetaSubeTest
         {
             Tarjeta tarjeta = new Tarjeta(50000);
             
-            for (int i = 1; i <= 29; i++)
+            for (int i = 1; i <= 30; i++)
             {
                 tarjeta.RegistrarViaje(new DateTime(2024, 10, i));
             }
-            
+
             int montoViaje30 = tarjeta.CalcularMontoPasajeEnFecha(TARIFA_BASICA, new DateTime(2024, 10, 30));
             int montoEsperado = (int)(TARIFA_BASICA * 0.8);
             Assert.AreEqual(montoEsperado, montoViaje30, "Viaje 30 debería tener 20% de descuento");

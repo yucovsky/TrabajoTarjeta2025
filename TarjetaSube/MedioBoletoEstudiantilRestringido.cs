@@ -25,7 +25,7 @@ namespace TarjetaSube
             return CalcularMontoPasajeEnFecha(tarifaBase, DateTime.Now);
         }
 
-        public int CalcularMontoPasajeEnFecha(int tarifaBase, DateTime fechaReferencia)
+        public override int CalcularMontoPasajeEnFecha(int tarifaBase, DateTime fechaReferencia)
         {
             if (!ValidadorFranjaHoraria.EstaEnFranjaHorariaPermitida(fechaReferencia))
             {
@@ -36,7 +36,7 @@ namespace TarjetaSube
             return viajesHoy.Count < MAX_VIAJES_POR_DIA ? tarifaBase / 2 : tarifaBase;
         }
 
-        public void RegistrarViaje(DateTime fechaHoraViaje)
+        public override void RegistrarViaje(DateTime fechaHoraViaje)
         {
             if (!ValidadorFranjaHoraria.EstaEnFranjaHorariaPermitida(fechaHoraViaje))
             {

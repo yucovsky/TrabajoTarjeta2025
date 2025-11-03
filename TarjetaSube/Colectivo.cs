@@ -25,9 +25,17 @@ namespace TarjetaSube
         }
 
         public Boleto PagarCon(Tarjeta tarjeta)
-        {
+            {
             int montoAPagar = tarjeta.CalcularMontoPasaje(TARIFA_BASICA);
             int montoTotalAbonado = tarjeta.CalcularMontoTotalAbonado(TARIFA_BASICA);
+
+            if (tarjeta is Tarjeta && !(tarjeta is MedioBoletoEstudiantil) && 
+                !(tarjeta is BoletoGratuitoEstudiantil) && !(tarjeta is FranquiciaCompleta) &&
+                !(tarjeta is MedioBoletoEstudiantilRestringido) && !(tarjeta is BoletoGratuitoEstudiantilRestringido) &&
+                !(tarjeta is FranquiciaCompletaRestringida))
+            {
+                tarjeta.RegistrarViaje(DateTime.Now);
+            }
 
             if (!tarjeta.PuedePagar(montoAPagar))
             {
@@ -121,8 +129,7 @@ namespace TarjetaSube
         {
             int montoAPagar;
             int montoTotalAbonado;
-<<<<<<< HEAD
-            
+
             if (tarjeta is MedioBoletoEstudiantilRestringido medioBoletoRestringido)
             {
                 if (!ValidadorFranjaHoraria.EstaEnFranjaHorariaPermitida(fechaHora))
@@ -154,10 +161,6 @@ namespace TarjetaSube
                 montoTotalAbonado = 0;
             }
             else if (tarjeta is MedioBoletoEstudiantil medioBoleto)
-=======
-
-            if (tarjeta is MedioBoletoEstudiantil medioBoleto)
->>>>>>> main
             {
                 medioBoleto.RegistrarViaje(fechaHora);
                 montoAPagar = medioBoleto.CalcularMontoPasajeEnFecha(TARIFA_BASICA, fechaHora);
@@ -177,12 +180,11 @@ namespace TarjetaSube
             }
             else
             {
-                montoAPagar = tarjeta.CalcularMontoPasajeEnFecha(TARIFA_BASICA, fechaHora);
+                tarjeta.RegistrarViaje(fechaHora); 
+                montoAPagar = tarjeta.CalcularMontoPasajeEnFecha(TARIFA_BASICA, fechaHora); 
                 montoTotalAbonado = tarjeta.CalcularMontoTotalAbonado(TARIFA_BASICA);
-                tarjeta.RegistrarViaje(fechaHora);
             }
-<<<<<<< HEAD
-            
+
             if (tarjeta is BoletoGratuitoEstudiantilRestringido bgr)
             {
                 if (!bgr.PuedePagarEnFecha(montoAPagar, fechaHora))
@@ -201,15 +203,7 @@ namespace TarjetaSube
             {
                 throw new InvalidOperationException("No se puede realizar el viaje. Saldo insuficiente.");
             }
-            
-=======
 
-            if (!tarjeta.PuedePagar(montoAPagar))
-            {
-                throw new InvalidOperationException("No se puede realizar el viaje. Saldo insuficiente.");
-            }
-
->>>>>>> main
             if (!tarjeta.EsFranquiciaGratuita() || montoAPagar > 0)
             {
                 tarjeta.Pagar(montoAPagar);

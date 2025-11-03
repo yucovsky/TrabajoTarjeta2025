@@ -72,7 +72,7 @@ namespace TarjetaSube
             return CalcularMontoPasaje(tarifaBase);
         }
 
-        public int CalcularMontoPasajeEnFecha(int tarifaBase, DateTime fechaReferencia)
+        public override int CalcularMontoPasajeEnFecha(int tarifaBase, DateTime fechaReferencia)
         {
             LimpiarViajesAntiguos(fechaReferencia);
             return viajesGratuitosHoy.Count < MAX_VIAJES_GRATUITOS_POR_DIA ? 0 : tarifaBase;

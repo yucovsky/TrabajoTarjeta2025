@@ -13,7 +13,10 @@ namespace TarjetaSube
         private static readonly int[] CARGAS_PERMITIDAS = { 2000, 3000, 4000, 5000, 8000, 10000, 15000, 20000, 25000, 30000 };
         private static int nextId = 1;
         private int id;
-        protected List<DateTime> viajes;
+        protected List<DateTime> viajesEsteMes;
+        private const int VIAJES_DESCUENTO_20 = 30;
+        private const int VIAJES_DESCUENTO_25 = 60;
+        private const int VIAJES_NORMAL = 80;
 
         public Tarjeta(int saldo = 0)
         {
@@ -23,7 +26,7 @@ namespace TarjetaSube
             this.saldo = saldo;
             this.saldoPendiente = 0;
             this.id = nextId++;
-            this.viajes = new List<DateTime>();
+            this.viajesEsteMes = new List<DateTime>();
         }
 
         public int Id
@@ -39,19 +42,6 @@ namespace TarjetaSube
         public int SaldoPendiente
         {
             get { return saldoPendiente; }
-        }
-
-        public int ViajesEsteMes
-        {
-            get 
-            { 
-                return ObtenerViajesDelMes(DateTime.Now).Count; 
-            }
-        }
-
-        public int ViajesEnMes(DateTime fecha)
-        {
-            return ObtenerViajesDelMes(fecha).Count;
         }
 
         public virtual string TipoTarjeta
@@ -127,49 +117,33 @@ namespace TarjetaSube
 
         public virtual int CalcularMontoPasajeEnFecha(int tarifaBase, DateTime fechaReferencia)
         {
-            if (!EsFranquiciaGratuita())
+            int viajesMes = ObtenerViajesEsteMes(fechaReferencia);
+            
+            if (viajesMes >= VIAJES_DESCUENTO_20 && viajesMes < VIAJES_DESCUENTO_25)
             {
-                List<DateTime> viajesDelMes = ObtenerViajesDelMes(fechaReferencia);
-                int monto = CalcularMontoConDescuento(tarifaBase, viajesDelMes.Count);
-                return monto;
+                return (int)(tarifaBase * 0.8);
             }
-            return tarifaBase;
-        }
-
-        private int CalcularMontoConDescuento(int tarifaBase, int cantidadViajesPrevios)
-        {
-
-            if (cantidadViajesPrevios <= 28)
+            else if (viajesMes >= VIAJES_DESCUENTO_25 && viajesMes < VIAJES_NORMAL)
+            {
+                return (int)(tarifaBase * 0.75);
+            }
+            else
             {
                 return tarifaBase;
             }
-
-            if (cantidadViajesPrevios >= 29 && cantidadViajesPrevios <= 58)
-            {
-                int montoConDescuento = (int)(tarifaBase * 0.8);
-                return montoConDescuento;
-            }
-
-            if (cantidadViajesPrevios >= 59 && cantidadViajesPrevios <= 79)
-            {
-                int montoConDescuento = (int)(tarifaBase * 0.75);
-                return montoConDescuento;
-            }
-            
-            return tarifaBase;
         }
 
-        public virtual void RegistrarViaje(DateTime fechaViaje)
+        public virtual void RegistrarViaje(DateTime fechaHoraViaje)
         {
-            viajes.Add(fechaViaje);
+            viajesEsteMes.Add(fechaHoraViaje);
         }
 
-        private List<DateTime> ObtenerViajesDelMes(DateTime fechaReferencia)
+        public int ObtenerViajesEsteMes(DateTime fechaReferencia)
         {
-            DateTime primerDiaDelMes = new DateTime(fechaReferencia.Year, fechaReferencia.Month, 1);
-            DateTime ultimoDiaDelMes = primerDiaDelMes.AddMonths(1).AddDays(-1);
+            DateTime primerDiaMes = new DateTime(fechaReferencia.Year, fechaReferencia.Month, 1);
+            DateTime primerDiaSiguienteMes = primerDiaMes.AddMonths(1);
             
-            return viajes.Where(v => v >= primerDiaDelMes && v <= ultimoDiaDelMes).ToList();
+            return viajesEsteMes.Count(v => v >= primerDiaMes && v < primerDiaSiguienteMes);
         }
 
         public virtual bool EsFranquiciaGratuita()
@@ -197,6 +171,16 @@ namespace TarjetaSube
                     return true;
             }
             return false;
+        }
+
+        public int ViajesEnMes()
+        {
+            return ObtenerViajesEsteMes(DateTime.Now);
+        }
+
+        public int ViajesEnMes(DateTime fechaReferencia)
+        {
+            return ObtenerViajesEsteMes(fechaReferencia);
         }
     }
 }

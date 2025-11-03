@@ -73,7 +73,7 @@ namespace TarjetaSube
             viajesGratuitosHoy.RemoveAll(viaje => viaje.Date < hoy);
         }
 
-        public int CalcularMontoPasajeEnFecha(int tarifaBase, DateTime fechaReferencia)
+        public override int CalcularMontoPasajeEnFecha(int tarifaBase, DateTime fechaReferencia)
         {
             if (!ValidadorFranjaHoraria.EstaEnFranjaHorariaPermitida(fechaReferencia))
             {
