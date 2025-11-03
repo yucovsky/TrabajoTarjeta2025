@@ -117,11 +117,41 @@ namespace TarjetaSube
         {
             int montoAPagar;
             int montoTotalAbonado;
-        
-            if (tarjeta is MedioBoletoEstudiantil medioBoleto)
+            
+            if (tarjeta is MedioBoletoEstudiantilRestringido medioBoletoRestringido)
+            {
+                if (!ValidadorFranjaHoraria.EstaEnFranjaHorariaPermitida(fechaHora))
+                {
+                    throw new InvalidOperationException("No se puede utilizar el medio boleto fuera de la franja horaria permitida");
+                }
+                medioBoletoRestringido.RegistrarViaje(fechaHora);
+                montoAPagar = medioBoletoRestringido.CalcularMontoPasajeEnFecha(TARIFA_BASICA, fechaHora);
+                montoTotalAbonado = medioBoletoRestringido.CalcularMontoTotalAbonado(TARIFA_BASICA);
+            }
+            else if (tarjeta is BoletoGratuitoEstudiantilRestringido boletoGratuitoRestringido)
+            {
+                if (!ValidadorFranjaHoraria.EstaEnFranjaHorariaPermitida(fechaHora))
+                {
+                    throw new InvalidOperationException("No se puede utilizar el boleto gratuito fuera de la franja horaria permitida");
+                }
+                boletoGratuitoRestringido.RegistrarViajeGratuito(fechaHora);
+                montoAPagar = 0;
+                montoTotalAbonado = 0;
+            }
+            else if (tarjeta is FranquiciaCompletaRestringida franquiciaCompletaRestringida)
+            {
+                if (!ValidadorFranjaHoraria.EstaEnFranjaHorariaPermitida(fechaHora))
+                {
+                    throw new InvalidOperationException("No se puede utilizar la franquicia completa fuera de la franja horaria permitida");
+                }
+                franquiciaCompletaRestringida.RegistrarViajeGratuito(fechaHora);
+                montoAPagar = 0;
+                montoTotalAbonado = 0;
+            }
+            else if (tarjeta is MedioBoletoEstudiantil medioBoleto)
             {
                 medioBoleto.RegistrarViaje(fechaHora);
-                montoAPagar = medioBoleto.CalcularMontoPasaje(TARIFA_BASICA);
+                montoAPagar = medioBoleto.CalcularMontoPasajeEnFecha(TARIFA_BASICA, fechaHora);
                 montoTotalAbonado = medioBoleto.CalcularMontoTotalAbonado(TARIFA_BASICA);
             }
             else if (tarjeta is BoletoGratuitoEstudiantil boletoGratuito)
@@ -142,11 +172,25 @@ namespace TarjetaSube
                 montoTotalAbonado = tarjeta.CalcularMontoTotalAbonado(TARIFA_BASICA);
             }
             
-            if (!tarjeta.PuedePagar(montoAPagar))
+            if (tarjeta is BoletoGratuitoEstudiantilRestringido bgr)
+            {
+                if (!bgr.PuedePagarEnFecha(montoAPagar, fechaHora))
+                {
+                    throw new InvalidOperationException("No se puede realizar el viaje. Fuera de franja horaria.");
+                }
+            }
+            else if (tarjeta is FranquiciaCompletaRestringida fcr)
+            {
+                if (!fcr.PuedePagarEnFecha(montoAPagar, fechaHora))
+                {
+                    throw new InvalidOperationException("No se puede realizar el viaje. Fuera de franja horaria.");
+                }
+            }
+            else if (!tarjeta.PuedePagar(montoAPagar))
             {
                 throw new InvalidOperationException("No se puede realizar el viaje. Saldo insuficiente.");
             }
-        
+            
             if (!tarjeta.EsFranquiciaGratuita() || montoAPagar > 0)
             {
                 tarjeta.Pagar(montoAPagar);

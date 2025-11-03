@@ -21,13 +21,7 @@ namespace TarjetaSube
 
         public override int CalcularMontoPasaje(int tarifaBase)
         {
-            // Usar DateTime.Now para el cálculo actual
-            return CalcularMontoPasajeEnFecha(tarifaBase, DateTime.Now);
-        }
-
-        public int CalcularMontoPasajeEnFecha(int tarifaBase, DateTime fechaReferencia)
-        {
-            LimpiarViajesAntiguos(fechaReferencia);
+            LimpiarViajesAntiguos(DateTime.Now);
             return viajesGratuitosHoy.Count < MAX_VIAJES_GRATUITOS_POR_DIA ? 0 : tarifaBase;
         }
 
@@ -60,7 +54,6 @@ namespace TarjetaSube
         private void LimpiarViajesAntiguos(DateTime fechaReferencia)
         {
             DateTime hoy = fechaReferencia.Date;
-            // Solo eliminar viajes de días ANTERIORES al día de referencia
             viajesGratuitosHoy.RemoveAll(viaje => viaje.Date < hoy);
         }
 
@@ -77,6 +70,12 @@ namespace TarjetaSube
         public override int CalcularMontoTotalAbonado(int tarifaBase)
         {
             return CalcularMontoPasaje(tarifaBase);
+        }
+
+        public int CalcularMontoPasajeEnFecha(int tarifaBase, DateTime fechaReferencia)
+        {
+            LimpiarViajesAntiguos(fechaReferencia);
+            return viajesGratuitosHoy.Count < MAX_VIAJES_GRATUITOS_POR_DIA ? 0 : tarifaBase;
         }
     }
 }

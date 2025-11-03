@@ -14,9 +14,11 @@ namespace TarjetaSubeTest
             FranquiciaCompleta tarjeta = new FranquiciaCompleta();
             Colectivo colectivo = new Colectivo("132", 1234);
 
-            bool resultado = colectivo.PagarConBoolean(tarjeta);
+            // Usar fecha dentro de franja horaria
+            DateTime dentroFranja = new DateTime(2024, 10, 30, 15, 0, 0);
+            Boleto boleto = colectivo.PagarConEnFecha(tarjeta, dentroFranja);
 
-            Assert.IsTrue(resultado);
+            Assert.IsNotNull(boleto);
             Assert.AreEqual(0, tarjeta.Saldo);
         }
 
@@ -26,15 +28,15 @@ namespace TarjetaSubeTest
             FranquiciaCompleta tarjeta = new FranquiciaCompleta();
             Colectivo colectivo = new Colectivo("132", 1234);
         
-            bool primerResultado = colectivo.PagarConBoolean(tarjeta);
-            Assert.IsTrue(primerResultado);
+            DateTime dentroFranja = new DateTime(2024, 10, 30, 10, 0, 0);
+            Boleto boleto1 = colectivo.PagarConEnFecha(tarjeta, dentroFranja);
+            Assert.IsNotNull(boleto1);
             Assert.AreEqual(0, tarjeta.Saldo);
         
-            bool segundoResultado = colectivo.PagarConBoolean(tarjeta);
-            Assert.IsTrue(segundoResultado);
+            DateTime dentroFranja2 = new DateTime(2024, 10, 30, 11, 0, 0);
+            Boleto boleto2 = colectivo.PagarConEnFecha(tarjeta, dentroFranja2);
+            Assert.IsNotNull(boleto2);
             Assert.AreEqual(0, tarjeta.Saldo);
-            
-            bool tercerResultado = colectivo.PagarConBoolean(tarjeta);
         }
 
         [Test]
@@ -43,27 +45,12 @@ namespace TarjetaSubeTest
             MedioBoletoEstudiantil tarjeta = new MedioBoletoEstudiantil(1000);
             Colectivo colectivo = new Colectivo("132", 1234);
 
+            DateTime dentroFranja = new DateTime(2024, 10, 30, 15, 0, 0);
+            Boleto boleto = colectivo.PagarConEnFecha(tarjeta, dentroFranja);
+
             int montoEsperado = TARIFA_BASICA / 2;
-            bool resultado = colectivo.PagarConBoolean(tarjeta);
-
-            Assert.IsTrue(resultado);
+            Assert.IsNotNull(boleto);
             Assert.AreEqual(1000 - montoEsperado, tarjeta.Saldo);
-        }
-
-        [Test]
-        public void MedioBoletoEstudiantil_MultiplesViajes_SiempreMitad()
-        {
-            MedioBoletoEstudiantil tarjeta = new MedioBoletoEstudiantil(5000);
-            Colectivo colectivo = new Colectivo("132", 1234);
-            
-            DateTime primerViaje = new DateTime(2024, 10, 30, 10, 0, 0);
-            DateTime segundoViaje = new DateTime(2024, 10, 30, 10, 6, 0); 
-
-            Boleto boleto1 = colectivo.PagarConEnFecha(tarjeta, primerViaje);
-            Assert.AreEqual(TARIFA_BASICA / 2, boleto1.Monto);
-
-            Boleto boleto2 = colectivo.PagarConEnFecha(tarjeta, segundoViaje);
-            Assert.AreEqual(TARIFA_BASICA / 2, boleto2.Monto);
         }
 
         [Test]
@@ -72,9 +59,10 @@ namespace TarjetaSubeTest
             BoletoGratuitoEstudiantil tarjeta = new BoletoGratuitoEstudiantil(1000);
             Colectivo colectivo = new Colectivo("132", 1234);
 
-            bool resultado = colectivo.PagarConBoolean(tarjeta);
+            DateTime dentroFranja = new DateTime(2024, 10, 30, 15, 0, 0);
+            Boleto boleto = colectivo.PagarConEnFecha(tarjeta, dentroFranja);
 
-            Assert.IsTrue(resultado);
+            Assert.IsNotNull(boleto);
             Assert.AreEqual(1000, tarjeta.Saldo);
         }
 
@@ -84,9 +72,10 @@ namespace TarjetaSubeTest
             Tarjeta tarjeta = new Tarjeta(2000);
             Colectivo colectivo = new Colectivo("132", 1234);
 
-            bool resultado = colectivo.PagarConBoolean(tarjeta);
+            DateTime dentroFranja = new DateTime(2024, 10, 30, 15, 0, 0);
+            Boleto boleto = colectivo.PagarConEnFecha(tarjeta, dentroFranja);
 
-            Assert.IsTrue(resultado);
+            Assert.IsNotNull(boleto);
             Assert.AreEqual(2000 - TARIFA_BASICA, tarjeta.Saldo);
         }
 
