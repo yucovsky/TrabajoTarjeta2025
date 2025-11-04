@@ -14,6 +14,7 @@ namespace TarjetaSube
         private static int nextId = 1;
         private int id;
         private List<DateTime> viajesMes;
+        private List<Viaje> historialViajes;
 
         public Tarjeta(int saldo = 0)
         {
@@ -24,27 +25,14 @@ namespace TarjetaSube
             this.saldoPendiente = 0;
             this.id = nextId++;
             this.viajesMes = new List<DateTime>();
+            this.historialViajes = new List<Viaje>();
         }
 
-        public int Id
-        {
-            get { return id; }
-        }
+        public int Id => id;
+        public int Saldo => saldo;
+        public int SaldoPendiente => saldoPendiente;
 
-        public int Saldo
-        {
-            get { return saldo; }
-        }
-
-        public int SaldoPendiente
-        {
-            get { return saldoPendiente; }
-        }
-
-        public virtual string TipoTarjeta
-        {
-            get { return "Normal"; }
-        }
+        public virtual string TipoTarjeta => "Normal";
         
         public void Cargar(int importe)
         {
@@ -144,6 +132,47 @@ namespace TarjetaSube
             return viajesMes.Count(v => v.Month == fechaReferencia.Month && v.Year == fechaReferencia.Year);
         }
 
+        public void RegistrarViajeConLinea(DateTime fechaViaje, string linea)
+        {
+            historialViajes.Add(new Viaje(fechaViaje, linea));
+            viajesMes.Add(fechaViaje);
+        }
+
+        public bool PuedeRealizarTrasbordo(DateTime fechaHora, string nuevaLinea)
+        {
+            LimpiarViajesAntiguos(fechaHora);
+
+            if (!EsDiaYHoraValidoParaTrasbordo(fechaHora))
+                return false;
+
+            var viajesRecientes = historialViajes
+                .Where(v => (fechaHora - v.FechaHora).TotalHours <= 1)
+                .OrderByDescending(v => v.FechaHora)
+                .ToList();
+
+            if (!viajesRecientes.Any())
+                return false;
+
+            var ultimoViaje = viajesRecientes.First();
+            return ultimoViaje.Linea != nuevaLinea;
+        }
+
+        private void LimpiarViajesAntiguos(DateTime fechaReferencia)
+        {
+            historialViajes.RemoveAll(v => (fechaReferencia - v.FechaHora).TotalHours > 1);
+        }
+
+        private bool EsDiaYHoraValidoParaTrasbordo(DateTime fechaHora)
+        {
+            DayOfWeek dia = fechaHora.DayOfWeek;
+            int hora = fechaHora.Hour;
+
+            if (dia == DayOfWeek.Sunday)
+                return false;
+
+            return hora >= 7 && hora < 22;
+        }
+
         private bool EsCargaValida(int importe)
         {
             foreach (int carga in CARGAS_PERMITIDAS)
@@ -152,6 +181,18 @@ namespace TarjetaSube
                     return true;
             }
             return false;
+        }
+
+        private class Viaje
+        {
+            public DateTime FechaHora { get; }
+            public string Linea { get; }
+
+            public Viaje(DateTime fechaHora, string linea)
+            {
+                FechaHora = fechaHora;
+                Linea = linea;
+            }
         }
     }
 }

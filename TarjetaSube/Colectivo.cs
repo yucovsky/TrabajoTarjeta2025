@@ -21,20 +21,9 @@ namespace TarjetaSube
         {
         }
 
-        public string Linea
-        {
-            get { return linea; }
-        }
-
-        public int Interno
-        {
-            get { return interno; }
-        }
-
-        public bool EsInterurbano
-        {
-            get { return esInterurbano; }
-        }
+        public string Linea => linea;
+        public int Interno => interno;
+        public bool EsInterurbano => esInterurbano;
 
         private int ObtenerTarifa()
         {
@@ -43,129 +32,87 @@ namespace TarjetaSube
 
         public Boleto PagarCon(Tarjeta tarjeta)
         {
+            return PagarConEnFecha(tarjeta, DateTime.Now);
+        }
+
+        public Boleto PagarConEnFecha(Tarjeta tarjeta, DateTime fechaHora)
+        {
             int tarifaBase = ObtenerTarifa();
-            int montoAPagar = tarjeta.CalcularMontoPasaje(tarifaBase);
+            bool esTrasbordo = false;
+            int montoAPagar;
+
+            if (tarjeta.PuedeRealizarTrasbordo(fechaHora, this.linea))
+            {
+                esTrasbordo = true;
+                montoAPagar = 0; 
+            }
+            else
+            {
+                if (tarjeta is MedioBoletoEstudiantil medioBoleto)
+                {
+                    montoAPagar = medioBoleto.CalcularMontoPasajeEnFecha(tarifaBase, fechaHora);
+                }
+                else if (tarjeta is BoletoGratuitoEstudiantil boletoGratuito)
+                {
+                    montoAPagar = boletoGratuito.CalcularMontoPasajeEnFecha(tarifaBase, fechaHora);
+                }
+                else if (tarjeta is FranquiciaCompleta franquiciaCompleta)
+                {
+                    montoAPagar = franquiciaCompleta.CalcularMontoPasajeEnFecha(tarifaBase, fechaHora);
+                }
+                else
+                {
+                    montoAPagar = tarjeta.CalcularMontoPasajeEnFecha(tarifaBase, fechaHora);
+                }
+            }
+
             int montoTotalAbonado = tarjeta.CalcularMontoTotalAbonado(tarifaBase);
 
-            if (!tarjeta.PuedePagar(montoAPagar))
+            if (montoAPagar > 0 && !tarjeta.PuedePagar(montoAPagar))
             {
                 throw new InvalidOperationException("No se puede realizar el viaje. Saldo insuficiente.");
             }
 
-            int saldoAnterior = tarjeta.Saldo;
-            
-            if (tarjeta is MedioBoletoEstudiantil medioBoleto)
+            tarjeta.RegistrarViajeConLinea(fechaHora, this.linea);
+
+            if (tarjeta is MedioBoletoEstudiantil medioBoletoTarjeta)
             {
-                medioBoleto.RegistrarViaje(DateTime.Now);
+                medioBoletoTarjeta.RegistrarViaje(fechaHora);
             }
-            else if (tarjeta is BoletoGratuitoEstudiantil boletoGratuito)
+            else if (tarjeta is BoletoGratuitoEstudiantil boletoGratuitoTarjeta)
             {
-                boletoGratuito.RegistrarViajeGratuito(DateTime.Now);
+                boletoGratuitoTarjeta.RegistrarViajeGratuito(fechaHora);
             }
-            else if (tarjeta is FranquiciaCompleta franquiciaCompleta)
+            else if (tarjeta is FranquiciaCompleta franquiciaCompletaTarjeta)
             {
-                franquiciaCompleta.RegistrarViajeGratuito(DateTime.Now);
+                franquiciaCompletaTarjeta.RegistrarViajeGratuito(fechaHora);
             }
             else
             {
-                tarjeta.RegistrarViaje(DateTime.Now);
+                tarjeta.RegistrarViaje(fechaHora);
             }
 
-            if (!tarjeta.EsFranquiciaGratuita() || montoAPagar > 0)
+            if (montoAPagar > 0)
             {
                 tarjeta.Pagar(montoAPagar);
             }
 
-            return new Boleto(linea, interno, montoAPagar, DateTime.Now, 
-                            tarjeta.TipoTarjeta, tarjeta.Saldo, tarjeta.Id, montoTotalAbonado);
+            return new Boleto(linea, interno, montoAPagar, fechaHora, 
+                            tarjeta.TipoTarjeta, tarjeta.Saldo, tarjeta.Id, 
+                            montoTotalAbonado, esTrasbordo);
         }
 
         public bool PagarConBoolean(Tarjeta tarjeta)
         {
-            int tarifaBase = ObtenerTarifa();
-            int montoAPagar = tarjeta.CalcularMontoPasaje(tarifaBase);
-
-            if (!tarjeta.PuedePagar(montoAPagar))
-            {
-                return false;
-            }
-
             try
             {
-                if (tarjeta is MedioBoletoEstudiantil medioBoleto)
-                {
-                    medioBoleto.RegistrarViaje(DateTime.Now);
-                }
-                else if (tarjeta is BoletoGratuitoEstudiantil boletoGratuito)
-                {
-                    boletoGratuito.RegistrarViajeGratuito(DateTime.Now);
-                }
-                else if (tarjeta is FranquiciaCompleta franquiciaCompleta)
-                {
-                    franquiciaCompleta.RegistrarViajeGratuito(DateTime.Now);
-                }
-                else
-                {
-                    tarjeta.RegistrarViaje(DateTime.Now);
-                }
+                var boleto = PagarCon(tarjeta);
+                return true;
             }
-            catch (InvalidOperationException)
+            catch
             {
                 return false;
             }
-
-            if (!tarjeta.EsFranquiciaGratuita() || montoAPagar > 0)
-            {
-                return tarjeta.IntentarPagar(montoAPagar);
-            }
-
-            return true;
         }
-
-        public Boleto PagarConEnFecha(Tarjeta tarjeta, DateTime fechaHora)
-{
-    int tarifaBase = ObtenerTarifa();
-    int montoAPagar;
-    int montoTotalAbonado;
-
-    // No capturar excepciones aquí - dejar que se propaguen
-    if (tarjeta is MedioBoletoEstudiantil medioBoleto)
-    {
-        montoAPagar = medioBoleto.CalcularMontoPasajeEnFecha(tarifaBase, fechaHora);
-        montoTotalAbonado = medioBoleto.CalcularMontoTotalAbonado(tarifaBase);
-        medioBoleto.RegistrarViaje(fechaHora);
-    }
-    else if (tarjeta is BoletoGratuitoEstudiantil boletoGratuito)
-    {
-        montoAPagar = boletoGratuito.CalcularMontoPasajeEnFecha(tarifaBase, fechaHora);
-        montoTotalAbonado = boletoGratuito.CalcularMontoTotalAbonado(tarifaBase);
-        boletoGratuito.RegistrarViajeGratuito(fechaHora);
-    }
-    else if (tarjeta is FranquiciaCompleta franquiciaCompleta)
-    {
-        montoAPagar = franquiciaCompleta.CalcularMontoPasajeEnFecha(tarifaBase, fechaHora);
-        montoTotalAbonado = franquiciaCompleta.CalcularMontoTotalAbonado(tarifaBase);
-        franquiciaCompleta.RegistrarViajeGratuito(fechaHora);
-    }
-    else
-    {
-        montoAPagar = tarjeta.CalcularMontoPasajeEnFecha(tarifaBase, fechaHora);
-        montoTotalAbonado = tarjeta.CalcularMontoTotalAbonado(tarifaBase);
-        tarjeta.RegistrarViaje(fechaHora);
-    }
-    
-    if (!tarjeta.PuedePagar(montoAPagar))
-    {
-        throw new InvalidOperationException("No se puede realizar el viaje. Saldo insuficiente.");
-    }
-
-    if (!tarjeta.EsFranquiciaGratuita() || montoAPagar > 0)
-    {
-        tarjeta.Pagar(montoAPagar);
-    }
-    
-    return new Boleto(linea, interno, montoAPagar, fechaHora, 
-                    tarjeta.TipoTarjeta, tarjeta.Saldo, tarjeta.Id, montoTotalAbonado);
-}
     }
 }

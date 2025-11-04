@@ -4,82 +4,39 @@ namespace TarjetaSube
 {
     public class Boleto
     {
-        private string linea;
-        private int interno;
-        private int monto;
-        private DateTime fechaHora;
-        private string tipoTarjeta;
-        private int saldoRestante;
-        private int idTarjeta;
-        private int montoTotalAbonado;
+        public string Linea { get; }
+        public int Interno { get; }
+        public int Monto { get; }
+        public DateTime FechaHora { get; }
+        public string TipoTarjeta { get; }
+        public int SaldoRestante { get; }
+        public int IdTarjeta { get; }
+        public int MontoTotalAbonado { get; }
+        public bool EsTrasbordo { get; }
 
-        public Boleto(string linea, int interno, int monto, DateTime fechaHora, string tipoTarjeta, int saldoRestante, int idTarjeta, int montoTotalAbonado)
+        public Boleto(string linea, int interno, int monto, DateTime fechaHora, 
+                    string tipoTarjeta, int saldoRestante, int idTarjeta, 
+                    int montoTotalAbonado, bool esTrasbordo = false)
         {
-            this.linea = linea;
-            this.interno = interno;
-            this.monto = monto;
-            this.fechaHora = fechaHora;
-            this.tipoTarjeta = tipoTarjeta;
-            this.saldoRestante = saldoRestante;
-            this.idTarjeta = idTarjeta;
-            this.montoTotalAbonado = montoTotalAbonado;
+            Linea = linea;
+            Interno = interno;
+            Monto = monto;
+            FechaHora = fechaHora;
+            TipoTarjeta = tipoTarjeta;
+            SaldoRestante = saldoRestante;
+            IdTarjeta = idTarjeta;
+            MontoTotalAbonado = montoTotalAbonado;
+            EsTrasbordo = esTrasbordo;
         }
 
-        public string Linea
-        {
-            get { return linea; }
-        }
-
-        public int Interno
-        {
-            get { return interno; }
-        }
-
-        public int Monto
-        {
-            get { return monto; }
-        }
-
-        public DateTime FechaHora
-        {
-            get { return fechaHora; }
-        }
-
-        public string TipoTarjeta
-        {
-            get { return tipoTarjeta; }
-        }
-
-        public int SaldoRestante
-        {
-            get { return saldoRestante; }
-        }
-
-        public int IdTarjeta
-        {
-            get { return idTarjeta; }
-        }
-
-        public int MontoTotalAbonado
-        {
-            get { return montoTotalAbonado; }
-        }
-
-        public string Fecha
-        {
-            get { return fechaHora.ToString("dd/MM/yyyy"); }
-        }
-
-        public string Hora
-        {
-            get { return fechaHora.ToString("HH:mm:ss"); }
-        }
+        public string Fecha => FechaHora.ToString("dd/MM/yyyy");
+        public string Hora => FechaHora.ToString("HH:mm:ss");
 
         public override string ToString()
         {
-            return $"Boleto - Línea: {Linea}, Interno: {Interno}, Fecha: {Fecha}, Hora: {Hora}, " +
-                    $"Tipo: {TipoTarjeta}, Monto: ${Monto}, Saldo Restante: ${SaldoRestante}, " +
-                    $"ID Tarjeta: {IdTarjeta}, Total Abonado: ${MontoTotalAbonado}";
+            string trasbordoInfo = EsTrasbordo ? " (TRASBORDO)" : "";
+            return $"Línea: {Linea}, Interno: {Interno}, Tipo: {TipoTarjeta}, " +
+                    $"Monto: ${Monto}{trasbordoInfo}, Saldo Restante: ${SaldoRestante}";
         }
     }
 }
