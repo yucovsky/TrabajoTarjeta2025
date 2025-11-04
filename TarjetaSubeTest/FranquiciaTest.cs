@@ -14,9 +14,8 @@ namespace TarjetaSubeTest
             BoletoGratuitoEstudiantil tarjeta = new BoletoGratuitoEstudiantil(1000);
             Colectivo colectivo = new Colectivo("132", 1234);
 
-            DateTime fechaValida = new DateTime(2024, 10, 25, 10, 0, 0); 
+            bool resultado = colectivo.PagarConBoolean(tarjeta);
 
-            bool resultado = colectivo.PagarConBooleanEnFecha(tarjeta, fechaValida);
             Assert.IsTrue(resultado);
             Assert.AreEqual(1000, tarjeta.Saldo);
         }
@@ -27,9 +26,8 @@ namespace TarjetaSubeTest
             FranquiciaCompleta tarjeta = new FranquiciaCompleta();
             Colectivo colectivo = new Colectivo("132", 1234);
 
-            DateTime fechaValida = new DateTime(2024, 10, 25, 10, 0, 0);
+            bool resultado = colectivo.PagarConBoolean(tarjeta);
 
-            bool resultado = colectivo.PagarConBooleanEnFecha(tarjeta, fechaValida);
             Assert.IsTrue(resultado);
             Assert.AreEqual(0, tarjeta.Saldo);
         }

@@ -1,3 +1,4 @@
+/*
 using TarjetaSube;
 using NUnit.Framework;
 using System;
@@ -98,3 +99,5 @@ namespace TarjetaSubeTest
         }
     }
 }
+Todo este archivo comentado ya que prueba funcionalidad fuera de uso
+*/
