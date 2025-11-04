@@ -58,5 +58,25 @@ namespace TarjetaSubeTest
             Assert.AreEqual(fechaEspecifica, boleto.FechaHora);
             Assert.AreEqual(420, tarjeta.Saldo);
         }
+
+        [Test]
+        public void Colectivo_Interurbano_Constructor_Y_Propiedades()
+        {
+            Colectivo colectivo = new Colectivo("33", 1234, true);
+            
+            Assert.AreEqual("33", colectivo.Linea);
+            Assert.AreEqual(1234, colectivo.Interno);
+            Assert.IsTrue(colectivo.EsInterurbano);
+        }
+        
+        [Test]
+        public void Colectivo_Urbano_Constructor_Y_Propiedades()
+        {
+            Colectivo colectivo = new Colectivo("132", 5678, false);
+            
+            Assert.AreEqual("132", colectivo.Linea);
+            Assert.AreEqual(5678, colectivo.Interno);
+            Assert.IsFalse(colectivo.EsInterurbano);
+        }
     }
 }

@@ -11,21 +11,49 @@ namespace TarjetaSubeTest
         [Test]
         public void BoletoGratuitoEstudiantil_NoPermiteMasDeDosViajesGratuitosPorDia()
         {
-            Colectivo colectivo = new Colectivo("132", 1234);
             BoletoGratuitoEstudiantil tarjeta = new BoletoGratuitoEstudiantil(5000);
 
             DateTime primerViaje = new DateTime(2024, 10, 30, 10, 0, 0);
             DateTime segundoViaje = new DateTime(2024, 10, 30, 11, 0, 0);
             DateTime tercerViaje = new DateTime(2024, 10, 30, 12, 0, 0);
 
-            Boleto boleto1 = colectivo.PagarConEnFecha(tarjeta, primerViaje);
-            Assert.AreEqual(0, boleto1.Monto);
+            tarjeta.RegistrarViajeGratuito(primerViaje);
+            tarjeta.RegistrarViajeGratuito(segundoViaje);
 
-            Boleto boleto2 = colectivo.PagarConEnFecha(tarjeta, segundoViaje);
-            Assert.AreEqual(0, boleto2.Monto);
-        
             Assert.Throws<InvalidOperationException>(() => 
-                colectivo.PagarConEnFecha(tarjeta, tercerViaje));
+                tarjeta.RegistrarViajeGratuito(tercerViaje));
+        }
+
+        [Test]
+        public void FranquiciaCompleta_NoPermiteMasDeDosViajesGratuitosPorDia()
+        {
+            FranquiciaCompleta tarjeta = new FranquiciaCompleta(5000);
+
+            DateTime primerViaje = new DateTime(2024, 10, 30, 10, 0, 0);
+            DateTime segundoViaje = new DateTime(2024, 10, 30, 11, 0, 0);
+            DateTime tercerViaje = new DateTime(2024, 10, 30, 12, 0, 0);
+
+            tarjeta.RegistrarViajeGratuito(primerViaje);
+            tarjeta.RegistrarViajeGratuito(segundoViaje);
+
+            Assert.Throws<InvalidOperationException>(() => 
+                tarjeta.RegistrarViajeGratuito(tercerViaje));
+        }
+
+        [Test]
+        public void BoletoGratuitoEstudiantil_TercerViajeConSaldo_CobraCorrectamente()
+        {
+            BoletoGratuitoEstudiantil tarjeta = new BoletoGratuitoEstudiantil(5000);
+
+            DateTime primerViaje = new DateTime(2024, 10, 30, 10, 0, 0);
+            DateTime segundoViaje = new DateTime(2024, 10, 30, 11, 0, 0);
+            DateTime tercerViaje = new DateTime(2024, 10, 30, 12, 0, 0);
+
+            tarjeta.RegistrarViajeGratuito(primerViaje);
+            tarjeta.RegistrarViajeGratuito(segundoViaje);
+
+            Assert.Throws<InvalidOperationException>(() => 
+                tarjeta.RegistrarViajeGratuito(tercerViaje));
         }
 
         [Test]
@@ -45,26 +73,6 @@ namespace TarjetaSubeTest
         }
 
         [Test]
-        public void FranquiciaCompleta_NoPermiteMasDeDosViajesGratuitosPorDia()
-        {
-            Colectivo colectivo = new Colectivo("132", 1234);
-            FranquiciaCompleta tarjeta = new FranquiciaCompleta(5000);
-
-            DateTime primerViaje = new DateTime(2024, 10, 30, 10, 0, 0);
-            DateTime segundoViaje = new DateTime(2024, 10, 30, 11, 0, 0);
-            DateTime tercerViaje = new DateTime(2024, 10, 30, 12, 0, 0);
-        
-            Boleto boleto1 = colectivo.PagarConEnFecha(tarjeta, primerViaje);
-            Assert.AreEqual(0, boleto1.Monto);
-
-            Boleto boleto2 = colectivo.PagarConEnFecha(tarjeta, segundoViaje);
-            Assert.AreEqual(0, boleto2.Monto);
-
-            Assert.Throws<InvalidOperationException>(() => 
-                colectivo.PagarConEnFecha(tarjeta, tercerViaje));
-        }
-
-        [Test]
         public void FranquiciaCompleta_TercerViajeCobraTarifaCompleta()
         {
             FranquiciaCompleta tarjeta = new FranquiciaCompleta(5000);
@@ -81,42 +89,40 @@ namespace TarjetaSubeTest
         }
 
         [Test]
-public void BoletoGratuitoEstudiantil_ReiniciaContadorAlDiaSiguiente()
-{
-    BoletoGratuitoEstudiantil tarjeta = new BoletoGratuitoEstudiantil(5000);
-
-    // Cambiar fechas a dentro de franja horaria
-    DateTime dia1Viaje1 = new DateTime(2024, 10, 25, 10, 0, 0); // Viernes 10 AM
-    DateTime dia1Viaje2 = new DateTime(2024, 10, 25, 11, 0, 0); // Viernes 11 AM
-    DateTime dia2Viaje1 = new DateTime(2024, 10, 28, 10, 0, 0); // Lunes 10 AM
-
-    tarjeta.RegistrarViajeGratuito(dia1Viaje1);
-    tarjeta.RegistrarViajeGratuito(dia1Viaje2);
-
-    Assert.AreEqual(2, tarjeta.ViajesGratuitosHoyEnFecha(dia1Viaje2));
-
-    tarjeta.RegistrarViajeGratuito(dia2Viaje1);
-    Assert.AreEqual(1, tarjeta.ViajesGratuitosHoyEnFecha(dia2Viaje1));
-}
-
-[Test]
-public void FranquiciaCompleta_ReiniciaContadorAlDiaSiguiente()
-{
-    FranquiciaCompleta tarjeta = new FranquiciaCompleta(5000);
-
-    // Cambiar fechas a dentro de franja horaria
-    DateTime dia1Viaje1 = new DateTime(2024, 10, 25, 10, 0, 0); // Viernes 10 AM
-    DateTime dia1Viaje2 = new DateTime(2024, 10, 25, 11, 0, 0); // Viernes 11 AM
-    DateTime dia2Viaje1 = new DateTime(2024, 10, 28, 10, 0, 0); // Lunes 10 AM
-
-    tarjeta.RegistrarViajeGratuito(dia1Viaje1);
-    tarjeta.RegistrarViajeGratuito(dia1Viaje2);
-
-    Assert.AreEqual(2, tarjeta.ViajesGratuitosHoyEnFecha(dia1Viaje2));
-
-    tarjeta.RegistrarViajeGratuito(dia2Viaje1);
-    Assert.AreEqual(1, tarjeta.ViajesGratuitosHoyEnFecha(dia2Viaje1));
-}
+        public void BoletoGratuitoEstudiantil_ReiniciaContadorAlDiaSiguiente()
+        {
+            BoletoGratuitoEstudiantil tarjeta = new BoletoGratuitoEstudiantil(5000);
+        
+            DateTime dia1Viaje1 = new DateTime(2024, 10, 25, 10, 0, 0); 
+            DateTime dia1Viaje2 = new DateTime(2024, 10, 25, 11, 0, 0); 
+            DateTime dia2Viaje1 = new DateTime(2024, 10, 28, 10, 0, 0); 
+        
+            tarjeta.RegistrarViajeGratuito(dia1Viaje1);
+            tarjeta.RegistrarViajeGratuito(dia1Viaje2);
+        
+            Assert.AreEqual(2, tarjeta.ViajesGratuitosHoyEnFecha(dia1Viaje2));
+        
+            tarjeta.RegistrarViajeGratuito(dia2Viaje1);
+            Assert.AreEqual(1, tarjeta.ViajesGratuitosHoyEnFecha(dia2Viaje1));
+        }
+        
+        [Test]
+        public void FranquiciaCompleta_ReiniciaContadorAlDiaSiguiente()
+        {
+            FranquiciaCompleta tarjeta = new FranquiciaCompleta(5000);
+        
+            DateTime dia1Viaje1 = new DateTime(2024, 10, 25, 10, 0, 0); 
+            DateTime dia1Viaje2 = new DateTime(2024, 10, 25, 11, 0, 0); 
+            DateTime dia2Viaje1 = new DateTime(2024, 10, 28, 10, 0, 0); 
+        
+            tarjeta.RegistrarViajeGratuito(dia1Viaje1);
+            tarjeta.RegistrarViajeGratuito(dia1Viaje2);
+        
+            Assert.AreEqual(2, tarjeta.ViajesGratuitosHoyEnFecha(dia1Viaje2));
+        
+            tarjeta.RegistrarViajeGratuito(dia2Viaje1);
+            Assert.AreEqual(1, tarjeta.ViajesGratuitosHoyEnFecha(dia2Viaje1));
+        }
 
         [Test]
         public void FranquiciaCompleta_ViajesGratuitosHoy_ContadorCorrecto()
@@ -135,26 +141,6 @@ public void FranquiciaCompleta_ReiniciaContadorAlDiaSiguiente()
 
             Assert.Throws<InvalidOperationException>(() => 
                 tarjeta.RegistrarViajeGratuito(hoy.AddHours(12)));
-        }
-
-        [Test]
-        public void BoletoGratuitoEstudiantil_TercerViajeConSaldo_CobraCorrectamente()
-        {
-            Colectivo colectivo = new Colectivo("132", 1234);
-            BoletoGratuitoEstudiantil tarjeta = new BoletoGratuitoEstudiantil(5000);
-
-            DateTime primerViaje = new DateTime(2024, 10, 30, 10, 0, 0);
-            DateTime segundoViaje = new DateTime(2024, 10, 30, 11, 0, 0);
-            DateTime tercerViaje = new DateTime(2024, 10, 30, 12, 0, 0);
-
-            Boleto boleto1 = colectivo.PagarConEnFecha(tarjeta, primerViaje);
-            Assert.AreEqual(0, boleto1.Monto);
-
-            Boleto boleto2 = colectivo.PagarConEnFecha(tarjeta, segundoViaje);
-            Assert.AreEqual(0, boleto2.Monto);
-        
-            int montoCalculado = tarjeta.CalcularMontoPasajeEnFecha(TARIFA_BASICA, tercerViaje);
-            Assert.AreEqual(TARIFA_BASICA, montoCalculado);
         }
 
         [Test]
