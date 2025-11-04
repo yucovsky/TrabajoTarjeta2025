@@ -15,10 +15,7 @@ namespace TarjetaSube
             viajesHoy = new List<DateTime>();
         }
 
-        public override string TipoTarjeta
-        {
-            get { return "Medio Boleto Estudiantil"; }
-        }
+        public override string TipoTarjeta => "Medio Boleto Estudiantil";
 
         public override int CalcularMontoPasaje(int tarifaBase)
         {
