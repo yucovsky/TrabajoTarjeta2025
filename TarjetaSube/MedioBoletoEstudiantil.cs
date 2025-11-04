@@ -22,27 +22,12 @@ namespace TarjetaSube
 
         public override int CalcularMontoPasaje(int tarifaBase)
         {
-            return CalcularMontoPasajeEnFecha(tarifaBase, DateTime.Now);
-        }
-
-        public int CalcularMontoPasajeEnFecha(int tarifaBase, DateTime fechaReferencia)
-        {
-            if (!EsFranjaHorariaValida(fechaReferencia))
-            {
-                return tarifaBase;
-            }
-
-            LimpiarViajesAntiguos(fechaReferencia);
+            LimpiarViajesAntiguos(DateTime.Now);
             return viajesHoy.Count < MAX_VIAJES_POR_DIA ? tarifaBase / 2 : tarifaBase;
         }
 
         public void RegistrarViaje(DateTime fechaHoraViaje)
         {
-            if (!EsFranjaHorariaValida(fechaHoraViaje))
-            {
-                throw new InvalidOperationException("No se puede utilizar el medio boleto fuera de la franja horaria permitida (Lunes a Viernes 6-22)");
-            }
-
             LimpiarViajesAntiguos(fechaHoraViaje);
 
             if (viajesHoy.Count >= MAX_VIAJES_POR_DIA)
@@ -85,32 +70,6 @@ namespace TarjetaSube
         {
             DateTime hoy = fechaReferencia.Date; 
             viajesHoy.RemoveAll(viaje => viaje.Date < hoy);
-        }
-
-        private bool EsFranjaHorariaValida(DateTime fechaHora)
-        {
-            return fechaHora.DayOfWeek >= DayOfWeek.Monday && 
-                   fechaHora.DayOfWeek <= DayOfWeek.Friday && 
-                   fechaHora.Hour >= 6 && 
-                   fechaHora.Hour < 22;
-        }
-
-        public override bool PuedePagar(int monto)
-        {
-            if (!EsFranjaHorariaValida(DateTime.Now))
-            {
-                return false;
-            }
-            return base.PuedePagar(monto);
-        }
-
-        public override bool PuedePagarEnFecha(int monto, DateTime fechaSimulada)
-        {
-            if (!EsFranjaHorariaValida(fechaSimulada))
-            {
-                return false;
-            }
-            return base.PuedePagar(monto);
         }
 
         public override bool EsFranquiciaGratuita()
