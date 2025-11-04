@@ -9,13 +9,27 @@ namespace TarjetaSubeTest
         private const int TARIFA_BASICA = 1580;
 
         [Test]
+        public void BoletoGratuitoEstudiantil_SiempreGratis()
+        {
+            BoletoGratuitoEstudiantil tarjeta = new BoletoGratuitoEstudiantil(1000);
+            Colectivo colectivo = new Colectivo("132", 1234);
+
+            DateTime fechaValida = new DateTime(2024, 10, 25, 10, 0, 0); 
+
+            bool resultado = colectivo.PagarConBooleanEnFecha(tarjeta, fechaValida);
+            Assert.IsTrue(resultado);
+            Assert.AreEqual(1000, tarjeta.Saldo);
+        }
+
+        [Test]
         public void FranquiciaCompleta_SiemprePuedePagar()
         {
             FranquiciaCompleta tarjeta = new FranquiciaCompleta();
             Colectivo colectivo = new Colectivo("132", 1234);
 
-            bool resultado = colectivo.PagarConBoolean(tarjeta);
+            DateTime fechaValida = new DateTime(2024, 10, 25, 10, 0, 0);
 
+            bool resultado = colectivo.PagarConBooleanEnFecha(tarjeta, fechaValida);
             Assert.IsTrue(resultado);
             Assert.AreEqual(0, tarjeta.Saldo);
         }
@@ -64,18 +78,6 @@ namespace TarjetaSubeTest
 
             Boleto boleto2 = colectivo.PagarConEnFecha(tarjeta, segundoViaje);
             Assert.AreEqual(TARIFA_BASICA / 2, boleto2.Monto);
-        }
-
-        [Test]
-        public void BoletoGratuitoEstudiantil_SiempreGratis()
-        {
-            BoletoGratuitoEstudiantil tarjeta = new BoletoGratuitoEstudiantil(1000);
-            Colectivo colectivo = new Colectivo("132", 1234);
-
-            bool resultado = colectivo.PagarConBoolean(tarjeta);
-
-            Assert.IsTrue(resultado);
-            Assert.AreEqual(1000, tarjeta.Saldo);
         }
 
         [Test]

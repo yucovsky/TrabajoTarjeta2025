@@ -21,12 +21,17 @@ namespace TarjetaSube
 
         public override int CalcularMontoPasaje(int tarifaBase)
         {
-            if (!EsFranjaHorariaValida(DateTime.Now))
+            return CalcularMontoPasajeEnFecha(tarifaBase, DateTime.Now);
+        }
+
+        public int CalcularMontoPasajeEnFecha(int tarifaBase, DateTime fechaReferencia)
+        {
+            if (!EsFranjaHorariaValida(fechaReferencia))
             {
                 throw new InvalidOperationException("No se puede utilizar el boleto gratuito estudiantil fuera de la franja horaria permitida (Lunes a Viernes 6-22)");
             }
 
-            LimpiarViajesAntiguos(DateTime.Now);
+            LimpiarViajesAntiguos(fechaReferencia);
             return viajesGratuitosHoy.Count < MAX_VIAJES_GRATUITOS_POR_DIA ? 0 : tarifaBase;
         }
 
@@ -78,6 +83,15 @@ namespace TarjetaSube
         public override bool PuedePagar(int monto)
         {
             if (!EsFranjaHorariaValida(DateTime.Now))
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public override bool PuedePagarEnFecha(int monto, DateTime fechaSimulada)
+        {
+            if (!EsFranjaHorariaValida(fechaSimulada))
             {
                 return false;
             }

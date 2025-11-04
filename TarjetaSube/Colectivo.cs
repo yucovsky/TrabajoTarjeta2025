@@ -160,5 +160,42 @@ namespace TarjetaSube
             return new Boleto(linea, interno, montoAPagar, fechaHora, 
                             tarjeta.TipoTarjeta, tarjeta.Saldo, tarjeta.Id, montoTotalAbonado);
         }
+
+        public bool PagarConBooleanEnFecha(Tarjeta tarjeta, DateTime fechaSimulada)
+        {
+            int montoAPagar = tarjeta.CalcularMontoPasaje(TARIFA_BASICA);
+        
+            if (!tarjeta.PuedePagarEnFecha(montoAPagar, fechaSimulada))
+            {
+                return false;
+            }
+        
+            try
+            {
+                if (tarjeta is MedioBoletoEstudiantil medioBoleto)
+                {
+                    medioBoleto.RegistrarViaje(fechaSimulada);
+                }
+                else if (tarjeta is BoletoGratuitoEstudiantil boletoGratuito)
+                {
+                    boletoGratuito.RegistrarViajeGratuito(fechaSimulada);
+                }
+                else if (tarjeta is FranquiciaCompleta franquiciaCompleta)
+                {
+                    franquiciaCompleta.RegistrarViajeGratuito(fechaSimulada);
+                }
+            }
+            catch (InvalidOperationException)
+            {
+                return false;
+            }
+        
+            if (!tarjeta.EsFranquiciaGratuita() || montoAPagar > 0)
+            {
+                return tarjeta.IntentarPagar(montoAPagar);
+            }
+        
+            return true;
+        }
     }
 }

@@ -198,5 +198,10 @@ namespace TarjetaSube
             }
             return false;
         }
+
+        public virtual bool PuedePagarEnFecha(int monto, DateTime fechaSimulada)
+        {
+            return PuedePagar(monto);
+        }
     }
 }

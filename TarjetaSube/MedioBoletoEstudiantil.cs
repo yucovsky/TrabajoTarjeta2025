@@ -22,12 +22,17 @@ namespace TarjetaSube
 
         public override int CalcularMontoPasaje(int tarifaBase)
         {
-            if (!EsFranjaHorariaValida(DateTime.Now))
+            return CalcularMontoPasajeEnFecha(tarifaBase, DateTime.Now);
+        }
+
+        public int CalcularMontoPasajeEnFecha(int tarifaBase, DateTime fechaReferencia)
+        {
+            if (!EsFranjaHorariaValida(fechaReferencia))
             {
                 return tarifaBase;
             }
 
-            LimpiarViajesAntiguos(DateTime.Now);
+            LimpiarViajesAntiguos(fechaReferencia);
             return viajesHoy.Count < MAX_VIAJES_POR_DIA ? tarifaBase / 2 : tarifaBase;
         }
 
@@ -93,6 +98,15 @@ namespace TarjetaSube
         public override bool PuedePagar(int monto)
         {
             if (!EsFranjaHorariaValida(DateTime.Now))
+            {
+                return false;
+            }
+            return base.PuedePagar(monto);
+        }
+
+        public override bool PuedePagarEnFecha(int monto, DateTime fechaSimulada)
+        {
+            if (!EsFranjaHorariaValida(fechaSimulada))
             {
                 return false;
             }
